@@ -1,8 +1,8 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # =============================================================
-# 🚀 Termux Ultra Beauty (ASCII Edition)
-#    โดย Captaineieiei — เส้นตรงเป๊ะ 100%
+# 🚀 TERMUX ULTRA BEAUTY — รวมทุกอย่างไว้ในที่เดียว
+#    โดย Captaineieiei — 100% ของเรา ไม่มีของใครปน!
 # =============================================================
 
 clear
@@ -10,35 +10,75 @@ clear
 echo ""
 echo "+------------------------------------------------------+"
 echo "|                                                      |"
-echo "|    ██████╗ █████╗ ██████╗ ████████╗ █████╗ ██╗███╗  |"
-echo "|    ██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗██║████╗ |"
-echo "|    ██████╔╝███████║██████╔╝   ██║   ███████║██║██╔██╗|"
-echo "|    ██╔═══╝ ██╔══██║██╔═══╝    ██║   ██╔══██║██║██║╚██╗|"
-echo "|    ██║     ██║  ██║██║        ██║   ██║  ██║██║██║ ╚═╝|"
-echo "|    ╚═╝     ╚═╝  ╚═╝╚═╝        ╚═╝   ╚═╝  ╚═╝╚═╝╚═╝   |"
+echo "|  ████████╗███████╗██████╗ ███╗   ███╗██╗   ██╗██╗  ██╗ |"
+echo "|  ╚══██╔══╝██╔════╝██╔══██╗████╗ ████║██║   ██║╚██╗██╔╝ |"
+echo "|     ██║   █████╗  ██████╔╝██╔████╔██║██║   ██║ ╚███╔╝  |"
+echo "|     ██║   ██╔══╝  ██╔══██╗██║╚██╔╝██║██║   ██║ ██╔██╗  |"
+echo "|     ██║   ███████╗██║  ██║██║ ╚═╝ ██║╚██████╔╝██╔╝ ██╗ |"
+echo "|     ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═╝ |"
 echo "|                                                      |"
-echo "|         ✨ ULTRA BEAUTY ZSH CONFIG ✨                |"
-echo "|          โดย Captaineieiei — 100% ของเรา            |"
+echo "|      ✨ ULTRA BEAUTY ALL-IN-ONE INSTALLER ✨         |"
+echo "|        โดย Captaineieiei — 100% ของเราเอง           |"
 echo "+------------------------------------------------------+"
 echo ""
 
 sleep 1
 
-# ── 1. ติดตั้ง Zsh ──
+# ─────────────────────────────────────────────────────────────
+# ส่วนที่ 1: ติดตั้ง Zsh
+# ─────────────────────────────────────────────────────────────
 echo "📦 กำลังติดตั้ง Zsh..."
 pkg update -y && pkg upgrade -y
 pkg install zsh curl -y
 
-# ── 2. สร้างไฟล์ .zshrc ฉบับสวยเลิศ (ไร้กรอบพิเศษ) ──
-echo "✍️ กำลังสร้าง .zshrc พร้อมปลั๊กอินสุดสวย..."
+# ─────────────────────────────────────────────────────────────
+# ส่วนที่ 2: ตั้งค่าไฟล์ termux.properties (สีสัน)
+# ─────────────────────────────────────────────────────────────
+echo "🎨 กำลังสร้างไฟล์ตั้งค่าสี..."
+mkdir -p ~/.termux
+cat > ~/.termux/termux.properties << 'EOFPROP'
+# =====================================================
+# 🎨 Termux Premium Theme — Captaineieiei Edition
+# =====================================================
+background=#1a1b26
+foreground=#c0caf5
+cursor_color=#f7768e
+color0=#15161e
+color1=#f7768e
+color2=#9ece6a
+color3=#e0af68
+color4=#7aa2f7
+color5=#bb9af7
+color6=#7dcfff
+color7=#a9b1d6
+color8=#414868
+color9=#f7768e
+color10=#9ece6a
+color11=#e0af68
+color12=#7aa2f7
+color13=#bb9af7
+color14=#7dcfff
+color15=#c0caf5
+font=DejaVu Sans Mono
+fullscreen=true
+hide-soft-keyboard-on-startup=true
+terminal-transcript-rows=5000
+EOFPROP
+termux-reload-settings
+echo "✅ ตั้งค่าสีและฟอนต์เรียบร้อย!"
 
-cat > ~/.zshrc << 'EOF'
+# ─────────────────────────────────────────────────────────────
+# ส่วนที่ 3: สร้าง .zshrc (พร้อมทุกอย่าง)
+# ─────────────────────────────────────────────────────────────
+echo "✍️ กำลังสร้าง .zshrc พร้อม Startup Banner และปลั๊กอิน..."
+
+cat > ~/.zshrc << 'EOFZSHRC'
 # =============================================================
-# 🔥 ULTRA BEAUTY .zshrc — โดย Captaineieiei
-#    ปลั๊กอินสวยๆ เขียนเอง 100% (เส้นตรงเป๊ะ!)
+# 🔥 .zshrc ULTRA BEAUTY — โดย Captaineieiei
+#    ปลั๊กอิน 3 ตัว, Prompt สวย, Startup Banner, Aliases
 # =============================================================
 
-# ── ตั้งค่าสีและ Unicode ──
+# ── พื้นฐาน ──
 autoload -U colors && colors
 setopt PROMPT_SUBST
 setopt HIST_IGNORE_ALL_DUPS
@@ -57,7 +97,7 @@ function captain_suggest() {
     if [[ -n "$suggestion" ]]; then
         local suffix="${suggestion#$current_buffer}"
         if [[ -n "$suffix" ]]; then
-            RPROMPT="%F{13}-> ${suffix}%f"
+            RPROMPT="%F{13}➜ ${suffix}%f"
         else
             RPROMPT=""
         fi
@@ -71,7 +111,7 @@ add-zle-hook-widget zle-line-pre-redraw captain_suggest
 
 function accept_suggestion() {
     if [[ -n "$RPROMPT" ]]; then
-        local suggestion_text=$(echo "$RPROMPT" | sed 's/.*-> //' | sed 's/%F.*//')
+        local suggestion_text=$(echo "$RPROMPT" | sed 's/.*➜ //' | sed 's/%F.*//')
         BUFFER="$BUFFER$suggestion_text"
         RPROMPT=""
         zle reset-prompt
@@ -98,18 +138,18 @@ function captain_highlight() {
 add-zle-hook-widget zle-line-pre-redraw captain_highlight
 
 # ─────────────────────────────────────────────────────────────
-# 🧠 ปลั๊กอินที่ 3: Captain Status (Exit Code)
+# 🧠 ปลั๊กอินที่ 3: Captain Status (ตรวจสอบ Exit Code)
 # ─────────────────────────────────────────────────────────────
 function captain_status() {
     if [[ $? -ne 0 ]]; then
-        echo "%F{9}[FAIL]%f"
+        echo "%F{9}[✘ FAIL]%f"
     else
-        echo "%F{10}[OK]%f"
+        echo "%F{10}[✔ OK]%f"
     fi
 }
 
 # ─────────────────────────────────────────────────────────────
-# 🌿 ฟังก์ชัน Git (แบบมีสี)
+# 🌿 ฟังก์ชัน Git (แสดง branch และสถานะ)
 # ─────────────────────────────────────────────────────────────
 git_branch() {
     git branch 2>/dev/null | grep '^*' | sed 's/* //'
@@ -119,7 +159,7 @@ git_status() {
     local branch=$(git_branch)
     if [[ -n "$branch" ]]; then
         if [[ -n $(git status -s 2>/dev/null) ]]; then
-            echo " %F{11}[%F{14}$branch%F{11}*]%f"
+            echo " %F{11}[%F{14}$branch%F{11}✦]%f"
         else
             echo " %F{10}[%F{14}$branch%F{10}]%f"
         fi
@@ -134,13 +174,13 @@ time_now() {
 }
 
 # ─────────────────────────────────────────────────────────────
-# 🎨 พร้อมต์หลัก (สวยแบบไม่มีกรอบพิเศษ)
+# 🎨 พร้อมต์หลัก (สวย มือโปร เส้นตรง)
 # ─────────────────────────────────────────────────────────────
 RPROMPT='$(time_now)'
 
 PROMPT='
 [ %F{6}%n@%m%f %F{7}%~%f ]$(git_status)
-%F{2}-->%f $(captain_status) '
+%F{2}➜%f $(captain_status) '
 
 # ─────────────────────────────────────────────────────────────
 # ⚡ คำสั่งลัด (Aliases)
@@ -156,6 +196,7 @@ alias ....='cd ../../..'
 alias update='pkg update && pkg upgrade -y'
 alias install='pkg install'
 alias remove='pkg uninstall'
+alias nano='nano -c'
 
 # ─────────────────────────────────────────────────────────────
 # 🌦️ ฟังก์ชันเช็คสภาพอากาศ
@@ -165,47 +206,61 @@ weather() {
 }
 
 # ─────────────────────────────────────────────────────────────
-# 🎉 ข้อความต้อนรับ (เส้นตรงเป๊ะ!)
+# 🎉 STARTUP BANNER — ข้อความต้อนรับตอนเปิดแอพ (สวยมาก!)
 # ─────────────────────────────────────────────────────────────
 clear
 echo ""
 echo "+------------------------------------------------------+"
 echo "|                                                      |"
-echo "|   🚀 ยินดีต้อนรับสู่ Termux ของ Captaineieiei!       |"
-echo "|   📅 $(date +"%A, %d %B %Y")                         |"
-echo "|   🕒 $(date +"%H:%M:%S")                             |"
+echo "|   ______ _          _   _          _   _  __ _      |"
+echo "|  |__  / | |        | | | |        | | | |/ _| |     |"
+echo "|    / /| | | ___  __| | | |_ ___   | |_| | |_| |     |"
+echo "|   / / | | |/ _ \/ _\` | | __/ _ \  |  _  |  _| |     |"
+echo "|  / /__| | |  __/ (_| | | || (_) | | | | | | | |     |"
+echo "| /_____|_|_|\___|\__,_|  \__\___/  |_| |_|_| |_|     |"
 echo "|                                                      |"
-echo "|   ✨ ปลั๊กอินของเราเอง:                              |"
-echo "|      - พิมพ์แล้วเห็นสีเขียว (มี) / แดง (ไม่มี)        |"
-echo "|      - กด -> (ลูกศรขวา) เพื่อเติมคำแนะนำ            |"
-echo "|      - แสดงสถานะ Git และ Exit Code                  |"
+echo "|  ✨ WELCOME BACK, CAPTAIN! TERMUX พร้อมใช้งานแล้ว!   |"
 echo "|                                                      |"
-echo "|   🔥 100% ของเราเอง — ไม่มีของใครปน!                |"
 echo "+------------------------------------------------------+"
 echo ""
-EOF
+echo "📅  วันที่: $(date +"%A, %d %B %Y")"
+echo "🕒  เวลา: $(date +"%H:%M:%S")"
+echo "👤  ผู้ใช้: $(whoami)"
+echo ""
+echo "💡  คำสั่งลัดประจำเครื่อง:"
+echo "   ll        = ดูไฟล์ทั้งหมด"
+echo "   update    = อัปเดตระบบ"
+echo "   ..        = ย้อนกลับ 1 โฟลเดอร์"
+echo "   weather   = เช็คสภาพอากาศ (ค่าเริ่มต้นกรุงเทพ)"
+echo "   clear     = ล้างหน้าจอ"
+echo ""
+EOFZSHRC
 
-# ── 3. ตั้ง Zsh เป็นเชลล์หลัก ──
+# ─────────────────────────────────────────────────────────────
+# ส่วนที่ 4: ตั้ง Zsh เป็นเชลล์หลัก
+# ─────────────────────────────────────────────────────────────
 echo "🔄 กำลังตั้ง Zsh เป็นเชลล์หลัก..."
 chsh -s zsh
 
-# ── 4. เสร็จสิ้น ──
+# ─────────────────────────────────────────────────────────────
+# ส่วนที่ 5: เสร็จสิ้น
+# ─────────────────────────────────────────────────────────────
 echo ""
 echo "+------------------------------------------------------+"
 echo "|                                                      |"
-echo "|   🎉 ติดตั้ง Zsh + ปลั๊กอินสุดสวยเสร็จสมบูรณ์!       |"
+echo "|   🎉 ติดตั้งสำเร็จ! ทุกอย่างรวมอยู่ในที่เดียวแล้ว!   |"
 echo "|                                                      |"
-echo "|   📌 ขั้นตอนต่อไป:                                  |"
+echo "|   📌 ขั้นตอนต่อไป (ทำตามนี้ให้ครบ):                  |"
 echo "|   1. พิมพ์ 'exit' แล้ว Enter เพื่อปิดเซสชัน          |"
 echo "|   2. ปิดแอพ Termux ทิ้ง (ปัดออกจาก Recent Apps)     |"
-echo "|   3. เปิด Termux ใหม่ — แล้วคุณจะพบกับความสวยงาม!   |"
+echo "|   3. เปิด Termux ใหม่ — แล้วคุณจะพบกับ:             |"
 echo "|                                                      |"
-echo "|   🧠 ฟีเจอร์ใหม่ (เส้นตรงเป๊ะ):                     |"
-echo "|      ✅ Captain Suggest (ม่วง ->)                   |"
-echo "|      ✅ Captain Highlight (เขียว/แดง)               |"
-echo "|      ✅ แสดง Exit Code ([OK]/[FAIL])               |"
-echo "|      ✅ แสดงเวลาและ Git แบบมือโปร                   |"
+echo "|      ✅ ธีมสีสวย (Tokyo Night)                       |"
+echo "|      ✅ Startup Banner สุดอลังการ                    |"
+echo "|      ✅ ปลั๊กอิน 3 ตัว (เขียนเอง 100%)               |"
+echo "|      ✅ พร้อมต์สวย แสดงเวลา, Git, Exit Code         |"
+echo "|      ✅ คำสั่งลัด (ll, update, weather, ...)         |"
 echo "|                                                      |"
-echo "|   📝 แก้ไขเพิ่มเติมได้ที่ ~/.zshrc                   |"
+echo "|   🔥 100% ของเราเอง — ไม่มีของใครปน!                |"
 echo "+------------------------------------------------------+"
 echo ""
