@@ -1,8 +1,8 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # =============================================================
-# 🚀 TERMUX ULTRA BEAUTY — Straight Line Edition
-#    โดย Captaineieiei — เส้นตรง 100% ไม่ใช้ Emoji
+# 🚀 TERMUX ULTRA BEAUTY — อัปเดตเฉพาะของเรา
+#    โดย Captaineieiei — รองรับ SKIP_SYSTEM_UPDATE
 # =============================================================
 
 # ── ฟังก์ชันพิมพ์เร็ว ──
@@ -16,7 +16,7 @@ typewriter() {
     echo ""
 }
 
-# ── ฟังก์ชันแสดงกรอบเส้นตรง 54 ตัวอักษร ──
+# ── ฟังก์ชันกรอบเส้นตรง ──
 print_box() {
     local msg="$1"
     local len=${#msg}
@@ -34,7 +34,7 @@ print_box() {
     echo -e "\033[1;36m+------------------------------------------------------+\033[0m"
 }
 
-# ── ฟังก์ชันแสดงข้อมูลมือถือ (ASCII ล้วน ไม่มี Emoji) ──
+# ── ฟังก์ชันข้อมูลมือถือ ──
 device_info() {
     local model=$(getprop ro.product.model 2>/dev/null || echo "Unknown")
     local manufacturer=$(getprop ro.product.manufacturer 2>/dev/null || echo "Unknown")
@@ -46,7 +46,6 @@ device_info() {
     local storage=$(df -h /data 2>/dev/null | awk 'NR==2 {print "Used "$3" / "$2}')
     local ram=$(free -h 2>/dev/null | awk 'NR==2 {print "Used "$3" / "$2}')
 
-    # ── ใช้ printf จัดแนวให้ตรงทุกบรรทัด ──
     echo -e "\033[1;36m+------------------------------------------------------+\033[0m"
     printf "\033[1;36m|  \033[1;37m%-20s \033[1;33m%-30s \033[1;36m|\033[0m\n" "Device:" "$manufacturer $model"
     printf "\033[1;36m|  \033[1;37m%-20s \033[1;33m%-30s \033[1;36m|\033[0m\n" "Android:" "$android"
@@ -66,8 +65,16 @@ echo -e "\033[1;35m          ✨ ULTRA BEAUTY INSTALLER ✨\033[0m"
 echo -e "\033[1;32m               โดย Captaineieiei\033[0m"
 echo ""
 
+# ── ตรวจสอบ SKIP_SYSTEM_UPDATE ──
+if [[ -z "$SKIP_SYSTEM_UPDATE" ]]; then
+    echo -e "\033[1;36m🔄 โหมด: ติดตั้งครั้งแรก (อัปเดตระบบด้วย)\033[0m"
+else
+    echo -e "\033[1;33m🔄 โหมด: อัปเดตเฉพาะไฟล์ (ข้ามอัปเดตระบบ)\033[0m"
+fi
+echo ""
+
 # ── Loading Bar ──
-echo -ne "\033[1;36m⏳ กำลังเตรียมระบบ...\033[0m "
+echo -ne "\033[1;36m⏳ กำลังเตรียม...\033[0m "
 for i in {1..10}; do
     echo -ne "\033[1;32m█\033[0m"
     sleep 0.03
@@ -77,36 +84,34 @@ echo ""
 
 export DEBIAN_FRONTEND=noninteractive
 
-# ── อัปเกรดและแก้ curl ──
-print_box "🔧 อัปเกรดระบบและแก้ curl"
-{
-    apt update -y
-    apt full-upgrade -y -o Dpkg::Options::="--force-confold"
-    apt remove --purge curl libngtcp2 -y 2>/dev/null
-    apt install -y -o Dpkg::Options::="--force-confold" curl
-} > /dev/null 2>&1
+# ── 👇 ตรงนี้คือส่วน "อัปเดตระบบ" ที่เราจะข้ามได้ ──
+if [[ -z "$SKIP_SYSTEM_UPDATE" ]]; then
+    print_box "🔧 อัปเกรดระบบและแก้ curl"
+    {
+        apt update -y
+        apt full-upgrade -y -o Dpkg::Options::="--force-confold"
+        apt remove --purge curl libngtcp2 -y 2>/dev/null
+        apt install -y -o Dpkg::Options::="--force-confold" curl
+        apt install -y -o Dpkg::Options::="--force-confold" figlet zsh curl termux-api
+    } > /dev/null 2>&1
 
-if ! curl --version &> /dev/null; then
-    echo -e "\033[1;33m⚠️  curl ยังไม่ทำงาน กรุณาเลือก mirror ใหม่...\033[0m"
-    termux-change-repo
-    apt update -y
-    apt install --reinstall curl -y
-fi
-echo -e "\033[1;32m✅ ระบบและ curl พร้อมใช้งาน!\033[0m"
+    if ! curl --version &> /dev/null; then
+        echo -e "\033[1;33m⚠️  curl ยังไม่ทำงาน กรุณาเลือก mirror ใหม่...\033[0m"
+        termux-change-repo
+        apt update -y
+        apt install --reinstall curl -y
+    fi
+    echo -e "\033[1;32m✅ ระบบและ curl พร้อมใช้งาน!\033[0m"
 
-# ── ติดตั้งแพ็กเกจ ──
-print_box "📦 ติดตั้งแพ็กเกจที่จำเป็น"
-{
-    apt install -y -o Dpkg::Options::="--force-confold" figlet zsh curl termux-api
-} > /dev/null 2>&1
-echo -e "\033[1;32m✅ ติดตั้งสำเร็จ\033[0m"
-
-if ! command -v zsh &> /dev/null; then
-    echo -e "\033[1;31m❌ ติดตั้ง zsh ไม่สำเร็จ!\033[0m"
-    exit 1
+    if ! command -v zsh &> /dev/null; then
+        echo -e "\033[1;31m❌ ติดตั้ง zsh ไม่สำเร็จ!\033[0m"
+        exit 1
+    fi
+else
+    echo -e "\033[1;34m⏩ ข้ามการอัปเดตระบบ (อัปเดตเฉพาะไฟล์ config ของเรา)\033[0m"
 fi
 
-# ── ตั้งค่า termux.properties ──
+# ── ตั้งค่า termux.properties (อัปเดตทุกครั้ง) ──
 print_box "🎨 ตั้งค่าสีและฟอนต์"
 mkdir -p ~/.termux
 cat > ~/.termux/termux.properties << 'EOFPROP'
@@ -137,11 +142,11 @@ EOFPROP
 termux-reload-settings > /dev/null 2>&1
 echo -e "\033[1;32m✅ ตั้งค่าเรียบร้อย\033[0m"
 
-# ── สร้าง .zshrc ──
+# ── สร้าง .zshrc (อัปเดตทุกครั้ง) ──
 print_box "✍️  สร้างไฟล์ .zshrc"
 cat > ~/.zshrc << 'EOFZSHRC'
 # =============================================================
-# 🔥 .zshrc ULTRA BEAUTY — Straight Line Edition
+# 🔥 .zshrc ULTRA BEAUTY — โดย Captaineieiei
 # =============================================================
 
 autoload -U colors && colors
@@ -161,7 +166,7 @@ typewriter() {
     echo ""
 }
 
-# ── ฟังก์ชันแสดงข้อมูลมือถือ (ASCII ล้วน ไม่มี Emoji) ──
+# ── ข้อมูลมือถือ ──
 device_info() {
     local model=$(getprop ro.product.model 2>/dev/null || echo "Unknown")
     local manufacturer=$(getprop ro.product.manufacturer 2>/dev/null || echo "Unknown")
@@ -180,6 +185,18 @@ device_info() {
     printf "\033[1;36m|  \033[1;37m%-20s \033[1;33m%-30s \033[1;36m|\033[0m\n" "Storage:" "$storage"
     printf "\033[1;36m|  \033[1;37m%-20s \033[1;33m%-30s \033[1;36m|\033[0m\n" "RAM:" "$ram"
     echo -e "\033[1;36m+------------------------------------------------------+\033[0m"
+}
+
+# ──── 🚀 อัปเดตเฉพาะของเรา (ไม่แตะระบบ) ────
+myupdate() {
+    echo ""
+    echo -e "\033[1;36m🚀 กำลังอัปเดตเฉพาะไฟล์ปรับแต่งของเรา...\033[0m"
+    echo -e "\033[1;34m📥 ดาวน์โหลดสคริปต์ล่าสุด...\033[0m"
+    export SKIP_SYSTEM_UPDATE=1
+    bash <(curl -fsSL https://raw.githubusercontent.com/Captaineieiei/termux-custom/main/install.sh)
+    unset SKIP_SYSTEM_UPDATE
+    echo ""
+    echo -e "\033[1;32m✅ อัปเดตเฉพาะของเราเสร็จ! พิมพ์ 'exec zsh' เพื่อใช้ทันที\033[0m"
 }
 
 # ──── Captain Suggest ────
@@ -324,7 +341,8 @@ if [[ -z "$TERMUX_STARTUP" ]]; then
     echo ""
     typewriter "💡  คำสั่งลัด:" 0.03
     typewriter "   ll      = ดูไฟล์ทั้งหมด" 0.02
-    typewriter "   update  = อัปเดตระบบ" 0.02
+    typewriter "   update  = อัปเดตระบบ Termux (ของแท้)" 0.02
+    typewriter "   myupdate = อัปเดตเฉพาะของเรา (เร็ว)" 0.02
     typewriter "   device  = ดูข้อมูลมือถือ" 0.02
     typewriter "   weather = เช็คสภาพอากาศ" 0.02
     typewriter "   clear   = ล้างหน้าจอ" 0.02
@@ -333,26 +351,37 @@ fi
 EOFZSHRC
 echo -e "\033[1;32m✅ สร้าง .zshrc สำเร็จ\033[0m"
 
-# ── ตั้ง Zsh ──
-print_box "🔄 ตั้ง Zsh เป็นเชลล์หลัก"
-chsh -s zsh > /dev/null 2>&1
-echo -e "\033[1;32m✅ เปลี่ยนเชลล์สำเร็จ\033[0m"
+# ── ตั้ง Zsh (เฉพาะตอนติดตั้งครั้งแรก) ──
+if [[ -z "$SKIP_SYSTEM_UPDATE" ]]; then
+    print_box "🔄 ตั้ง Zsh เป็นเชลล์หลัก"
+    chsh -s zsh > /dev/null 2>&1
+    echo -e "\033[1;32m✅ เปลี่ยนเชลล์สำเร็จ\033[0m"
+else
+    echo -e "\033[1;34m⏩ ข้ามการตั้งเชลล์ (ใช้ของเดิม)\033[0m"
+fi
 
-# ── แสดงข้อมูลมือถือก่อนเข้า Zsh ──
+# ── แสดงข้อมูลมือถือ ──
 echo ""
 device_info
 echo ""
 
 # ── เสร็จสิ้น ──
-echo -e "\033[1;32m+------------------------------------------------------+\033[0m"
-echo -e "\033[1;32m|                                                      |\033[0m"
-echo -e "\033[1;32m|   🎉  ติดตั้งเสร็จสมบูรณ์!                           |\033[0m"
-echo -e "\033[1;32m|   ✅  แก้ปัญหา curl + libngtcp2 เรียบร้อย           |\033[0m"
-echo -e "\033[1;32m|   ✅  ระบบพร้อมใช้งาน 100%                          |\033[0m"
-echo -e "\033[1;32m|   ✅  กำลังเปลี่ยนไปใช้ Zsh ทันที                    |\033[0m"
-echo -e "\033[1;32m|                                                      |\033[0m"
-echo -e "\033[1;32m|   📱  พิมพ์ 'device' เพื่อดูข้อมูลมือถือทุกเมื่อ!     |\033[0m"
-echo -e "\033[1;32m+------------------------------------------------------+\033[0m"
-echo ""
-
-exec zsh
+if [[ -z "$SKIP_SYSTEM_UPDATE" ]]; then
+    echo -e "\033[1;32m+------------------------------------------------------+\033[0m"
+    echo -e "\033[1;32m|                                                      |\033[0m"
+    echo -e "\033[1;32m|   🎉  ติดตั้งเสร็จสมบูรณ์!                           |\033[0m"
+    echo -e "\033[1;32m|   ✅  ระบบพร้อมใช้งาน 100%                          |\033[0m"
+    echo -e "\033[1;32m|   ✅  กำลังเปลี่ยนไปใช้ Zsh ทันที                    |\033[0m"
+    echo -e "\033[1;32m+------------------------------------------------------+\033[0m"
+    echo ""
+    exec zsh
+else
+    echo -e "\033[1;32m+------------------------------------------------------+\033[0m"
+    echo -e "\033[1;32m|                                                      |\033[0m"
+    echo -e "\033[1;32m|   🎉  อัปเดตเฉพาะของเราเสร็จ!                       |\033[0m"
+    echo -e "\033[1;32m|   ✅  ไฟล์ .zshrc และ termux.properties ใหม่แล้ว    |\033[0m"
+    echo -e "\033[1;32m|   💡  พิมพ์ 'exec zsh' เพื่อใช้ทันที                 |\033[0m"
+    echo -e "\033[1;32m+------------------------------------------------------+\033[0m"
+    echo ""
+    # ไม่ต้อง exec zsh ในโหมดอัปเดต เพราะจะทำให้กลับไปที่ prompt เดิม
+fi
