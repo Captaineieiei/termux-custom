@@ -34,7 +34,15 @@ export DEBIAN_FRONTEND=noninteractive
 # ── 1. ติดตั้ง figlet และ Zsh ──
 echo -e "\033[1;34m📦 กำลังติดตั้ง figlet, zsh, curl...\033[0m"
 apt update -y
-apt install -y --force-confold figlet zsh curl
+# หมายเหตุ: --force-confold เป็น dpkg option ต้องส่งผ่าน -o Dpkg::Options::=
+# ใช้แบบเดิม (apt install -y --force-confold ...) จะ error: "not understood"
+apt install -y -o Dpkg::Options::="--force-confold" figlet zsh curl
+
+# ── ตรวจสอบว่าติดตั้ง zsh สำเร็จจริงก่อนไปขั้นต่อไป ──
+if ! command -v zsh &> /dev/null; then
+    echo -e "\033[1;31m❌ ติดตั้ง zsh ไม่สำเร็จ! ตรวจสอบการเชื่อมต่อเน็ตหรือรัน 'pkg install zsh' ด้วยตัวเองแล้วรันสคริปต์นี้ใหม่\033[0m"
+    exit 1
+fi
 
 # ── 2. ตั้งค่า termux.properties ──
 echo -e "\033[1;34m🎨 กำลังสร้างไฟล์ตั้งค่าสี...\033[0m"
