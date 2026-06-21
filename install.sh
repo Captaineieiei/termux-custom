@@ -1,14 +1,14 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # =============================================================
-# 🚀 TERMUX ULTRA BEAUTY — Full Edition (Fix curl)
-#    โดย Captaineieiei — แก้ปัญหา SSL_set_quick_https_transport_params
+# 🚀 TERMUX ULTRA BEAUTY — FAST & STRAIGHT
+#    โดย Captaineieiei — เส้นตรง 54 ตัวอักษร โหลดเร็วขึ้น
 # =============================================================
 
-# ── ฟังก์ชันพิมพ์ทีละตัว ──
+# ── ฟังก์ชันพิมพ์เร็ว ──
 typewriter() {
     local text="$1"
-    local delay="${2:-0.05}"
+    local delay="${2:-0.02}"   # เร็วขึ้น 0.02 วินาที
     for ((i=0; i<${#text}; i++)); do
         echo -n "${text:$i:1}"
         sleep "$delay"
@@ -16,73 +16,69 @@ typewriter() {
     echo ""
 }
 
-# ── ฟังก์ชันแสดงกรอบข้อความ ──
+# ── ฟังก์ชันแสดงกรอบเส้นตรง (ความยาว 54 ตัวอักษร) ──
 print_box() {
     local msg="$1"
+    # ตัดข้อความถ้ายาวเกิน 50 ตัวอักษร
+    if [[ ${#msg} -gt 50 ]]; then
+        msg="${msg:0:47}..."
+    fi
     local len=${#msg}
-    local border=$(printf '%*s' "$((len+4))" | tr ' ' '─')
-    echo -e "\033[1;36m┌─${border}─┐\033[0m"
-    echo -e "\033[1;36m│  \033[1;37m${msg}\033[1;36m  │\033[0m"
-    echo -e "\033[1;36m└─${border}─┘\033[0m"
+    local pad=$(( 50 - len ))
+    local left_pad=$(( pad / 2 ))
+    local right_pad=$(( pad - left_pad ))
+    local spaced="$(printf '%*s' $left_pad '')${msg}$(printf '%*s' $right_pad '')"
+    echo -e "\033[1;36m+------------------------------------------------------+\033[0m"
+    echo -e "\033[1;36m|  \033[1;37m${spaced}\033[1;36m  |\033[0m"
+    echo -e "\033[1;36m+------------------------------------------------------+\033[0m"
 }
 
 clear
 
-# ── อนิเมชั่นเปิดตัว ──
+# ── แสดง Header (ไม่ใช้ typewriter ช้า) ──
 echo -e "\033[1;33m"
 figlet -f big "TERMUX" 2>/dev/null || figlet -f standard "TERMUX" 2>/dev/null
 echo -e "\033[0m"
-
-typewriter "          ✨ ULTRA BEAUTY INSTALLER ✨" 0.06
-typewriter "               โดย Captaineieiei" 0.06
+echo -e "\033[1;35m          ✨ ULTRA BEAUTY INSTALLER ✨\033[0m"
+echo -e "\033[1;32m               โดย Captaineieiei\033[0m"
 echo ""
 
-sleep 0.5
-
-# ── อนิเมชั่นโหลด ──
-typewriter "⏳ กำลังเตรียมระบบ..." 0.05
-for i in {1..20}; do
+# ── Loading Bar สั้นลง (10 รอบ) ──
+echo -ne "\033[1;36m⏳ กำลังเตรียมระบบ...\033[0m "
+for i in {1..10}; do
     echo -ne "\033[1;32m█\033[0m"
-    sleep 0.05
+    sleep 0.03
 done
 echo -e " \033[1;32m100%\033[0m"
 echo ""
 
-sleep 0.3
-
 # ── ตั้งค่า apt ให้เงียบ ──
 export DEBIAN_FRONTEND=noninteractive
 
-# ── 0. อัปเกรดระบบแบบเต็ม (แก้ปัญหา lib) ──
-print_box "🔧 อัปเกรดระบบและแก้ไขไลบรารี"
-typewriter "▶ กำลังอัปเกรดระบบแบบเต็ม..." 0.05
-apt update -y
-apt full-upgrade -y -o Dpkg::Options::="--force-confold"
+# ── 0. อัปเกรดระบบและแก้ curl ──
+print_box "🔧 อัปเกรดระบบและแก้ curl"
+{
+    apt update -y
+    apt full-upgrade -y -o Dpkg::Options::="--force-confold"
+    apt remove --purge curl libngtcp2 -y 2>/dev/null
+    apt install -y -o Dpkg::Options::="--force-confold" curl
+} > /dev/null 2>&1
 
-typewriter "▶ กำลังลบ curl และ libngtcp2 เพื่อติดตั้งใหม่..." 0.05
-apt remove --purge curl libngtcp2 -y 2>/dev/null
-
-typewriter "▶ กำลังติดตั้ง curl ใหม่..." 0.05
-apt install -y -o Dpkg::Options::="--force-confold" curl
-
-# ── ตรวจสอบ curl ว่าทำงานได้หรือไม่ ──
 if ! curl --version &> /dev/null; then
     echo -e "\033[1;33m⚠️  curl ยังไม่ทำงาน กรุณาเลือก mirror ใหม่...\033[0m"
-    echo -e "\033[1;34m▶ กำลังเปิดหน้าต่างเปลี่ยน mirror...\033[0m"
     termux-change-repo
     apt update -y
     apt install --reinstall curl -y
 fi
-
 echo -e "\033[1;32m✅ ระบบและ curl พร้อมใช้งาน!\033[0m"
 
 # ── 1. ติดตั้ง figlet, zsh ──
 print_box "📦 ติดตั้งแพ็กเกจที่จำเป็น"
-typewriter "▶ กำลังติดตั้ง figlet, zsh, curl..." 0.05
-apt install -y -o Dpkg::Options::="--force-confold" figlet zsh curl
+{
+    apt install -y -o Dpkg::Options::="--force-confold" figlet zsh curl
+} > /dev/null 2>&1
 echo -e "\033[1;32m✅ ติดตั้งสำเร็จ\033[0m"
 
-# ── ตรวจสอบ zsh ──
 if ! command -v zsh &> /dev/null; then
     echo -e "\033[1;31m❌ ติดตั้ง zsh ไม่สำเร็จ!\033[0m"
     exit 1
@@ -92,7 +88,6 @@ fi
 print_box "🎨 ตั้งค่าสีและฟอนต์"
 mkdir -p ~/.termux
 cat > ~/.termux/termux.properties << 'EOFPROP'
-# Tokyo Night Theme
 background=#1a1b26
 foreground=#c0caf5
 cursor_color=#f7768e
@@ -117,14 +112,14 @@ fullscreen=true
 hide-soft-keyboard-on-startup=true
 terminal-transcript-rows=5000
 EOFPROP
-termux-reload-settings
+termux-reload-settings > /dev/null 2>&1
 echo -e "\033[1;32m✅ ตั้งค่าเรียบร้อย\033[0m"
 
 # ── 3. สร้าง .zshrc ──
 print_box "✍️  สร้างไฟล์ .zshrc"
 cat > ~/.zshrc << 'EOFZSHRC'
 # =============================================================
-# 🔥 .zshrc ULTRA BEAUTY — Full Edition
+# 🔥 .zshrc ULTRA BEAUTY — FAST & STRAIGHT
 # =============================================================
 
 autoload -U colors && colors
@@ -133,10 +128,10 @@ setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_SAVE_NO_DUPS
 setopt PROMPT_SP
 
-# ── ฟังก์ชันพิมพ์ทีละตัว ──
+# ── พิมพ์เร็ว (0.02) ──
 typewriter() {
     local text="$1"
-    local delay="${2:-0.04}"
+    local delay="${2:-0.02}"
     for ((i=0; i<${#text}; i++)); do
         echo -n "${text:$i:1}"
         sleep "$delay"
@@ -270,45 +265,45 @@ function _captain_farewell() {
 }
 add-zsh-hook zshexit _captain_farewell
 
-# ──── STARTUP BANNER ────
+# ──── STARTUP BANNER (เร็ว) ────
 if [[ -z "$TERMUX_STARTUP" ]]; then
     export TERMUX_STARTUP=1
     clear
     figlet -f standard "TERMUX" 2>/dev/null | sed 's/^/  /'
     echo ""
-    typewriter "          ✨ WELCOME BACK, CAPTAIN! ✨" 0.06
+    typewriter "          ✨ WELCOME BACK, CAPTAIN! ✨" 0.03
     echo ""
-    typewriter "📅  วันที่: $(date +"%A, %d %B %Y")" 0.04
-    typewriter "🕒  เวลา: $(date +"%H:%M:%S")" 0.04
-    typewriter "👤  ผู้ใช้: $(whoami)" 0.04
+    typewriter "📅  วันที่: $(date +"%A, %d %B %Y")" 0.02
+    typewriter "🕒  เวลา: $(date +"%H:%M:%S")" 0.02
+    typewriter "👤  ผู้ใช้: $(whoami)" 0.02
     echo ""
-    typewriter "💡  คำสั่งลัด:" 0.05
-    typewriter "   ll      = ดูไฟล์ทั้งหมด" 0.04
-    typewriter "   update  = อัปเดตระบบ" 0.04
-    typewriter "   ..      = ย้อนกลับ 1 โฟลเดอร์" 0.04
-    typewriter "   weather = เช็คสภาพอากาศ" 0.04
-    typewriter "   clear   = ล้างหน้าจอ" 0.04
+    typewriter "💡  คำสั่งลัด:" 0.03
+    typewriter "   ll      = ดูไฟล์ทั้งหมด" 0.02
+    typewriter "   update  = อัปเดตระบบ" 0.02
+    typewriter "   ..      = ย้อนกลับ 1 โฟลเดอร์" 0.02
+    typewriter "   weather = เช็คสภาพอากาศ" 0.02
+    typewriter "   clear   = ล้างหน้าจอ" 0.02
     echo ""
 fi
 EOFZSHRC
 echo -e "\033[1;32m✅ สร้าง .zshrc สำเร็จ\033[0m"
 
-# ── 4. ตั้ง Zsh เป็นเชลล์หลัก ──
+# ── 4. ตั้ง Zsh ──
 print_box "🔄 ตั้ง Zsh เป็นเชลล์หลัก"
-chsh -s zsh
+chsh -s zsh > /dev/null 2>&1
 echo -e "\033[1;32m✅ เปลี่ยนเชลล์สำเร็จ\033[0m"
 
 # ── 5. เสร็จสิ้น ──
 echo ""
-echo -e "\033[1;32m┌──────────────────────────────────────────────────────┐\033[0m"
-echo -e "\033[1;32m│                                                      │\033[0m"
-typewriter "│   🎉  ติดตั้งเสร็จสมบูรณ์!                           │" 0.05
-typewriter "│   ✅  แก้ปัญหา curl + libngtcp2 เรียบร้อย           │" 0.05
-typewriter "│   ✅  ระบบพร้อมใช้งาน 100%                          │" 0.05
-typewriter "│   ✅  กำลังเปลี่ยนไปใช้ Zsh ทันที                    │" 0.05
-echo -e "\033[1;32m│                                                      │\033[0m"
-typewriter "│   🔥  คราวนี้ใช้ได้แน่นอน!                           │" 0.05
-echo -e "\033[1;32m└──────────────────────────────────────────────────────┘\033[0m"
+echo -e "\033[1;32m+------------------------------------------------------+\033[0m"
+echo -e "\033[1;32m|                                                      |\033[0m"
+echo -e "\033[1;32m|   🎉  ติดตั้งเสร็จสมบูรณ์!                           |\033[0m"
+echo -e "\033[1;32m|   ✅  แก้ปัญหา curl + libngtcp2 เรียบร้อย           |\033[0m"
+echo -e "\033[1;32m|   ✅  ระบบพร้อมใช้งาน 100%                          |\033[0m"
+echo -e "\033[1;32m|   ✅  กำลังเปลี่ยนไปใช้ Zsh ทันที                    |\033[0m"
+echo -e "\033[1;32m|                                                      |\033[0m"
+echo -e "\033[1;32m|   🔥  เส้นตรง 54 ตัวอักษร  โหลดเร็วขึ้น!             |\033[0m"
+echo -e "\033[1;32m+------------------------------------------------------+\033[0m"
 echo ""
 
 exec zsh
