@@ -1,14 +1,14 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # =============================================================
-# 🚀 TERMUX ULTRA BEAUTY + ANIMATION
-#    โดย Captaineieiei — มีอนิเมชั่นตอนเปิดและตอนโหลด!
+# 🚀 TERMUX ULTRA BEAUTY — All-in-One Installer
+#    โดย Captaineieiei — รันแล้วใช้ได้เลย ไม่ต้องออก!
 # =============================================================
 
 clear
 
-# ── อนิเมชั่นเปิดตัว (Loading Bar) ──
-echo -e "\033[1;36m🔧 กำลังติดตั้ง ULTRA BEAUTY...\033[0m"
+# ── อนิเมชั่นเปิดตัว ──
+echo -e "\033[1;36m🔧 กำลังติดตั้ง ULTRA BEAUTY (โหมดอัตโนมัติ)...\033[0m"
 echo ""
 
 for i in {1..10}; do
@@ -24,17 +24,16 @@ for i in {1..10}; do
 done
 
 echo ""
-echo -e "\033[1;32m✅ ติดตั้งพร้อมแล้ว!\033[0m"
+echo -e "\033[1;32m✅ พร้อมติดตั้ง!\033[0m"
 sleep 0.5
 
-# ── ติดตั้ง figlet ──
-echo "📦 กำลังติดตั้ง figlet..."
-pkg install figlet -y
+# ── ตั้งค่าให้ apt ไม่ถามอะไรทั้งสิ้น ──
+export DEBIAN_FRONTEND=noninteractive
 
-# ── 1. ติดตั้ง Zsh ──
-echo -e "\033[1;34m📦 กำลังติดตั้ง Zsh...\033[0m"
-pkg update -y && pkg upgrade -y
-pkg install zsh curl -y
+# ── 1. ติดตั้ง figlet และ Zsh ──
+echo -e "\033[1;34m📦 กำลังติดตั้ง figlet, zsh, curl...\033[0m"
+apt update -y
+apt install -y --force-confold figlet zsh curl
 
 # ── 2. ตั้งค่า termux.properties ──
 echo -e "\033[1;34m🎨 กำลังสร้างไฟล์ตั้งค่าสี...\033[0m"
@@ -67,13 +66,12 @@ EOFPROP
 termux-reload-settings
 echo -e "\033[1;32m✅ ตั้งค่าสีและฟอนต์เรียบร้อย!\033[0m"
 
-# ── 3. สร้าง .zshrc (พร้อม Animation) ──
-echo -e "\033[1;34m✍️ กำลังสร้าง .zshrc พร้อม Startup Animation...\033[0m"
+# ── 3. สร้าง .zshrc ──
+echo -e "\033[1;34m✍️ กำลังสร้าง .zshrc...\033[0m"
 
 cat > ~/.zshrc << 'EOFZSHRC'
 # =============================================================
-# 🔥 .zshrc ULTRA BEAUTY + ANIMATION — โดย Captaineieiei
-#    มี Loading Bar, Matrix Effect, และอนิเมชั่นตอนพิมพ์!
+# 🔥 .zshrc ULTRA BEAUTY — โดย Captaineieiei
 # =============================================================
 
 autoload -U colors && colors
@@ -82,44 +80,7 @@ setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_SAVE_NO_DUPS
 setopt PROMPT_SP
 
-# ─────────────────────────────────────────────────────────────
-# 🎬 ฟังก์ชันอนิเมชั่น: Matrix Rain (เอฟเฟกต์เหมือน GIF)
-# ─────────────────────────────────────────────────────────────
-matrix_rain() {
-    clear
-    echo -e "\033[1;32m"
-    for i in {1..5}; do
-        echo -n "█ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █"
-        sleep 0.1
-        echo -ne "\r"
-        echo -n " █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █ █"
-        sleep 0.1
-        echo -ne "\r"
-    done
-    echo -e "\033[0m"
-    clear
-}
-
-# ─────────────────────────────────────────────────────────────
-# 🎬 ฟังก์ชันอนิเมชั่น: Loading Spinner (หมุนไปเรื่อยๆ)
-# ─────────────────────────────────────────────────────────────
-loading_spinner() {
-    local pid=$1
-    local delay=0.1
-    local spinstr='|/-\'
-    while kill -0 $pid 2>/dev/null; do
-        local temp=${spinstr#?}
-        printf " [%c]  " "$spinstr"
-        local spinstr=$temp${spinstr%"$temp"}
-        sleep $delay
-        printf "\b\b\b\b\b\b"
-    done
-    printf "    \b\b\b\b"
-}
-
-# ─────────────────────────────────────────────────────────────
-# 🧠 ปลั๊กอินที่ 1: Captain Suggest (พร้อมอนิเมชั่น)
-# ─────────────────────────────────────────────────────────────
+# ──── Captain Suggest ────
 function captain_suggest() {
     local current_buffer="$BUFFER"
     local len=${#current_buffer}
@@ -151,9 +112,7 @@ function accept_suggestion() {
 zle -N accept_suggestion
 bindkey '^[[C' accept_suggestion
 
-# ─────────────────────────────────────────────────────────────
-# 🧠 ปลั๊กอินที่ 2: Captain Highlight
-# ─────────────────────────────────────────────────────────────
+# ──── Captain Highlight ────
 function captain_highlight() {
     local buffer="$BUFFER"
     if [[ -z "$buffer" ]]; then
@@ -174,9 +133,7 @@ function captain_highlight() {
 }
 add-zle-hook-widget zle-line-pre-redraw captain_highlight
 
-# ─────────────────────────────────────────────────────────────
-# 🧠 ปลั๊กอินที่ 3: Captain Status
-# ─────────────────────────────────────────────────────────────
+# ──── Captain Status ────
 function captain_status() {
     if [[ $? -ne 0 ]]; then
         echo "%F{9}[✘ FAIL]%f"
@@ -185,9 +142,7 @@ function captain_status() {
     fi
 }
 
-# ─────────────────────────────────────────────────────────────
-# 🌿 Git
-# ─────────────────────────────────────────────────────────────
+# ──── Git ────
 git_branch() {
     git branch 2>/dev/null | grep '^*' | sed 's/* //'
 }
@@ -202,16 +157,12 @@ git_status() {
     fi
 }
 
-# ─────────────────────────────────────────────────────────────
-# 🎨 พร้อมต์หลัก
-# ─────────────────────────────────────────────────────────────
+# ──── Prompt ────
 PROMPT='
 [ %F{6}%n@%m%f %F{7}%~%f ]$(git_status) %F{8}%*%f
 %F{2}➜%f $(captain_status) '
 
-# ─────────────────────────────────────────────────────────────
-# ⚡ Aliases
-# ─────────────────────────────────────────────────────────────
+# ──── Aliases ────
 alias ll='ls -lah --color=auto'
 alias la='ls -A --color=auto'
 alias l='ls -CF --color=auto'
@@ -225,58 +176,36 @@ alias install='pkg install'
 alias remove='pkg uninstall'
 alias nano='nano -c'
 
-# ─────────────────────────────────────────────────────────────
-# 🌦️ weather
-# ─────────────────────────────────────────────────────────────
+# ──── Weather ────
 weather() {
     curl -s "wttr.in/${1:-Bangkok}?m" | head -n 20
 }
 
-# ─────────────────────────────────────────────────────────────
-# 🎬 STARTUP ANIMATION (เหมือน GIF ตอนเปิดแอพ)
-# ─────────────────────────────────────────────────────────────
-clear
-
-# ── อนิเมชั่น Loading Bar แบบเคลื่อนไหว ──
-echo -e "\033[1;36m🚀 กำลังโหลด TERMUX ULTRA...\033[0m"
-echo ""
-
-for i in {1..10}; do
-    echo -ne "\033[1;32m["
-    for j in $(seq 1 $i); do
-        echo -ne "█"
-    done
-    for j in $(seq $i 9); do
-        echo -ne "░"
-    done
-    echo -ne "] $((i*10))%\033[0m\r"
-    sleep 0.15
-done
-
-echo ""
-echo -e "\033[1;32m✅ โหลดเสร็จ! ยินดีต้อนรับครับ!\033[0m"
-sleep 0.3
-
-# ── แสดงข้อความต้อนรับ ──
-echo ""
-figlet -f standard "TERMUX" 2>/dev/null | sed 's/^/  /'
-echo ""
-echo -e "\033[1;33m          ✨ WELCOME BACK, CAPTAIN! ✨\033[0m"
-echo ""
-echo -e "\033[1;34m📅  วันที่:\033[0m \033[1;37m$(date +"%A, %d %B %Y")\033[0m"
-echo -e "\033[1;34m🕒  เวลา:\033[0m \033[1;37m$(date +"%H:%M:%S")\033[0m"
-echo -e "\033[1;34m👤  ผู้ใช้:\033[0m \033[1;37m$(whoami)\033[0m"
-echo ""
-echo -e "\033[1;32m💡  คำสั่งลัด:\033[0m"
-echo -e "   \033[1;32mll\033[0m      = ดูไฟล์ทั้งหมด"
-echo -e "   \033[1;32mupdate\033[0m  = อัปเดตระบบ"
-echo -e "   \033[1;32m..\033[0m      = ย้อนกลับ 1 โฟลเดอร์"
-echo -e "   \033[1;32mweather\033[0m = เช็คสภาพอากาศ (กรุงเทพ)"
-echo -e "   \033[1;32mclear\033[0m   = ล้างหน้าจอ"
-echo ""
+# ──── STARTUP BANNER (แสดงเฉพาะครั้งแรก) ────
+if [[ -z "$TERMUX_STARTUP" ]]; then
+    export TERMUX_STARTUP=1
+    clear
+    echo -e "\033[1;36m🚀 กำลังโหลด TERMUX ULTRA...\033[0m"
+    sleep 0.2
+    figlet -f standard "TERMUX" 2>/dev/null | sed 's/^/  /'
+    echo ""
+    echo -e "\033[1;33m          ✨ WELCOME BACK, CAPTAIN! ✨\033[0m"
+    echo ""
+    echo -e "\033[1;34m📅  วันที่:\033[0m \033[1;37m$(date +"%A, %d %B %Y")\033[0m"
+    echo -e "\033[1;34m🕒  เวลา:\033[0m \033[1;37m$(date +"%H:%M:%S")\033[0m"
+    echo -e "\033[1;34m👤  ผู้ใช้:\033[0m \033[1;37m$(whoami)\033[0m"
+    echo ""
+    echo -e "\033[1;32m💡  คำสั่งลัด:\033[0m"
+    echo -e "   \033[1;32mll\033[0m      = ดูไฟล์ทั้งหมด"
+    echo -e "   \033[1;32mupdate\033[0m  = อัปเดตระบบ"
+    echo -e "   \033[1;32m..\033[0m      = ย้อนกลับ 1 โฟลเดอร์"
+    echo -e "   \033[1;32mweather\033[0m = เช็คสภาพอากาศ"
+    echo -e "   \033[1;32mclear\033[0m   = ล้างหน้าจอ"
+    echo ""
+fi
 EOFZSHRC
 
-# ── 4. ตั้ง Zsh ──
+# ── 4. ตั้ง Zsh เป็นเชลล์หลัก ──
 echo -e "\033[1;34m🔄 กำลังตั้ง Zsh เป็นเชลล์หลัก...\033[0m"
 chsh -s zsh
 
@@ -284,18 +213,15 @@ chsh -s zsh
 echo ""
 echo -e "\033[1;32m+------------------------------------------------------+\033[0m"
 echo -e "\033[1;32m|                                                      |\033[0m"
-echo -e "\033[1;32m|   🎉 ติดตั้งเสร็จสมบูรณ์! (มีอนิเมชั่นแล้ว!)         |\033[0m"
+echo -e "\033[1;32m|   🎉 ติดตั้งเสร็จสมบูรณ์!                            |\033[0m"
 echo -e "\033[1;32m|                                                      |\033[0m"
-echo -e "\033[1;32m|   🎬 อนิเมชั่นที่คุณจะได้:                          |\033[0m"
-echo -e "\033[1;32m|      ✅ Loading Bar ตอนเปิดแอพ (เหมือน GIF)         |\033[0m"
-echo -e "\033[1;32m|      ✅ Spinner ขณะรันคำสั่ง (หมุนๆ)                |\033[0m"
-echo -e "\033[1;32m|      ✅ ข้อความต้อนรับที่สดใส                       |\033[0m"
+echo -e "\033[1;32m|   ✅ ตอบ 'n' ให้อัตโนมัติ (ผ่าน --force-confold)    |\033[0m"
+echo -e "\033[1;32m|   ✅ วางสคริปต์แล้วรออย่างเดียว                   |\033[0m"
+echo -e "\033[1;32m|   ✅ กำลังเปลี่ยนไปใช้ Zsh ทันที!                   |\033[0m"
 echo -e "\033[1;32m|                                                      |\033[0m"
-echo -e "\033[1;32m|   📌 ขั้นตอนต่อไป:                                  |\033[0m"
-echo -e "\033[1;32m|   1. พิมพ์ 'exit' แล้ว Enter                        |\033[0m"
-echo -e "\033[1;32m|   2. ปิดแอพแล้วเปิดใหม่                             |\033[0m"
-echo -e "\033[1;32m|   3. พิมพ์ 'ls' แล้วดูอนิเมชั่น Spinner วิ่ง!        |\033[0m"
-echo -e "\033[1;32m|                                                      |\033[0m"
-echo -e "\033[1;32m|   🔥 100% ของเราเอง — ไม่มีของใครปน!                |\033[0m"
+echo -e "\033[1;32m|   🔥 100% ของเราเอง — ไม่ต้องออกแล้วเปิดใหม่!       |\033[0m"
 echo -e "\033[1;32m+------------------------------------------------------+\033[0m"
 echo ""
+
+# ── 🔥 สำคัญ: เปลี่ยนไปใช้ Zsh ทันทีโดยไม่ต้องออก ──
+exec zsh
