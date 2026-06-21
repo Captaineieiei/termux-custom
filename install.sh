@@ -1,8 +1,9 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # =============================================================
-# 🚀 TERMUX ULTRA BEAUTY — All-in-One Installer
+# 🚀 TERMUX ULTRA BEAUTY — All-in-One Installer (FIXED)
 #    โดย Captaineieiei — รันแล้วใช้ได้เลย ไม่ต้องออก!
+#    แก้ไข: captain_status exit code ผิด, เพิ่มข้อความตอน exit
 # =============================================================
 
 clear
@@ -71,14 +72,13 @@ echo -e "\033[1;34m✍️ กำลังสร้าง .zshrc...\033[0m"
 
 cat > ~/.zshrc << 'EOFZSHRC'
 # =============================================================
-# 🔥 .zshrc ULTRA BEAUTY — โดย Captaineieiei
+# 🔥 .zshrc ULTRA BEAUTY — โดย Captaineieiei (FIXED)
 # =============================================================
 
 autoload -U colors && colors
 setopt PROMPT_SUBST
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_SAVE_NO_DUPS
-setopt PROMPT_SP
 
 # ──── Captain Suggest ────
 function captain_suggest() {
@@ -86,26 +86,29 @@ function captain_suggest() {
     local len=${#current_buffer}
     if [[ $len -lt 2 ]] || [[ "$current_buffer" =~ ^[[:space:]]+$ ]]; then
         RPROMPT=""
+        _captain_suggestion=""
         return
     fi
-    local suggestion=$(fc -l 1 | grep -F "$current_buffer" | grep -v "^.*$current_buffer$" | tail -1 | sed 's/^ *[0-9]* *//')
-    if [[ -n "$suggestion" ]]; then
+    local suggestion=$(fc -l -n 1 | grep -F "$current_buffer" | grep -v "^${current_buffer}\$" | tail -1)
+    if [[ -n "$suggestion" ]] && [[ "$suggestion" == "$current_buffer"* ]]; then
         local suffix="${suggestion#$current_buffer}"
         if [[ -n "$suffix" ]]; then
+            _captain_suggestion="$suffix"
             RPROMPT="%F{13}➜ ${suffix}%f"
             return
         fi
     fi
     RPROMPT=""
+    _captain_suggestion=""
 }
 autoload -Uz add-zle-hook-widget
 add-zle-hook-widget zle-line-pre-redraw captain_suggest
 
 function accept_suggestion() {
-    if [[ -n "$RPROMPT" ]]; then
-        local suggestion_text=$(echo "$RPROMPT" | sed 's/.*➜ //' | sed 's/%F.*//' | sed 's/%f//')
-        BUFFER="$BUFFER$suggestion_text"
+    if [[ -n "$_captain_suggestion" ]]; then
+        BUFFER="$BUFFER$_captain_suggestion"
         RPROMPT=""
+        _captain_suggestion=""
         zle reset-prompt
     fi
 }
@@ -133,9 +136,17 @@ function captain_highlight() {
 }
 add-zle-hook-widget zle-line-pre-redraw captain_highlight
 
-# ──── Captain Status ────
+# ──── Captain Status (FIXED: เก็บ exit code จริงของคำสั่งล่าสุด) ────
+# ต้องเก็บ $? ทันทีใน precmd hook ก่อนมีคำสั่งอื่นมาทับค่า
+_LAST_EXIT_CODE=0
+function _capture_exit_code() {
+    _LAST_EXIT_CODE=$?
+}
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd _capture_exit_code
+
 function captain_status() {
-    if [[ $? -ne 0 ]]; then
+    if [[ $_LAST_EXIT_CODE -ne 0 ]]; then
         echo "%F{9}[✘ FAIL]%f"
     else
         echo "%F{10}[✔ OK]%f"
@@ -181,6 +192,21 @@ weather() {
     curl -s "wttr.in/${1:-Bangkok}?m" | head -n 20
 }
 
+# ──── EXIT MESSAGE (ใหม่: แสดงข้อความตอนออกจาก shell) ────
+function _captain_farewell() {
+    echo ""
+    echo -e "\033[1;35m+------------------------------------------------------+\033[0m"
+    echo -e "\033[1;35m|                                                      |\033[0m"
+    echo -e "\033[1;35m|   👋 ขอบคุณที่ใช้ TERMUX ULTRA, CAPTAIN!             |\033[0m"
+    echo -e "\033[1;35m|                                                      |\033[0m"
+    echo -e "\033[1;33m|   🕒 ออกเมื่อ: $(date +"%H:%M:%S")                          |\033[0m"
+    echo -e "\033[1;35m|                                                      |\033[0m"
+    echo -e "\033[1;35m|   ✨ แล้วพบกันใหม่ครับ!                              |\033[0m"
+    echo -e "\033[1;35m+------------------------------------------------------+\033[0m"
+    echo ""
+}
+add-zsh-hook zshexit _captain_farewell
+
 # ──── STARTUP BANNER (แสดงเฉพาะครั้งแรก) ────
 if [[ -z "$TERMUX_STARTUP" ]]; then
     export TERMUX_STARTUP=1
@@ -215,8 +241,8 @@ echo -e "\033[1;32m+------------------------------------------------------+\033[
 echo -e "\033[1;32m|                                                      |\033[0m"
 echo -e "\033[1;32m|   🎉 ติดตั้งเสร็จสมบูรณ์!                            |\033[0m"
 echo -e "\033[1;32m|                                                      |\033[0m"
-echo -e "\033[1;32m|   ✅ ตอบ 'n' ให้อัตโนมัติ (ผ่าน --force-confold)    |\033[0m"
-echo -e "\033[1;32m|   ✅ วางสคริปต์แล้วรออย่างเดียว                   |\033[0m"
+echo -e "\033[1;32m|   ✅ Fixed: captain_status exit code ถูกต้องแล้ว    |\033[0m"
+echo -e "\033[1;32m|   ✅ Added: ข้อความตอน exit shell                   |\033[0m"
 echo -e "\033[1;32m|   ✅ กำลังเปลี่ยนไปใช้ Zsh ทันที!                   |\033[0m"
 echo -e "\033[1;32m|                                                      |\033[0m"
 echo -e "\033[1;32m|   🔥 100% ของเราเอง — ไม่ต้องออกแล้วเปิดใหม่!       |\033[0m"
