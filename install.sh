@@ -1,14 +1,14 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # =============================================================
-# 🚀 TERMUX ULTRA BEAUTY — All-in-One Installer (FIXED)
-#    โดย Captaineieiei — ใช้ pkg แทน apt เพื่อความเสถียร
+# 🚀 TERMUX ULTRA BEAUTY — All-in-One Installer (AUTO n)
+#    โดย Captaineieiei — กด n ให้อัตโนมัติทุกคำถาม!
 # =============================================================
 
 clear
 
 # ── อนิเมชั่นเปิดตัว ──
-echo -e "\033[1;36m🔧 กำลังติดตั้ง ULTRA BEAUTY (โหมดอัตโนมัติ)...\033[0m"
+echo -e "\033[1;36m🔧 กำลังติดตั้ง ULTRA BEAUTY (โหมดอัตโนมัติ ตอบ n ให้หมด)...\033[0m"
 echo ""
 
 for i in {1..10}; do
@@ -27,10 +27,13 @@ echo ""
 echo -e "\033[1;32m✅ พร้อมติดตั้ง!\033[0m"
 sleep 0.5
 
-# ── 1. อัปเดตและติดตั้งแพ็คเกจด้วย pkg (ไม่ต้องใช้ apt) ──
-echo -e "\033[1;34m📦 กำลังอัปเดตและติดตั้ง figlet, zsh, curl...\033[0m"
+# ── 1. อัปเดตแพ็คเกจ ──
+echo -e "\033[1;34m📦 กำลังอัปเดตแพ็คเกจ...\033[0m"
 pkg update -y
-pkg install -y figlet zsh curl
+
+# ── 2. ติดตั้ง figlet, zsh, curl (โดยตอบ n ให้อัตโนมัติ) ──
+echo -e "\033[1;34m📦 กำลังติดตั้ง figlet, zsh, curl (ตอบ n อัตโนมัติ)...\033[0m"
+yes n | pkg install figlet zsh curl
 
 # ── ตรวจสอบว่าติดตั้ง zsh สำเร็จ ──
 if ! command -v zsh &> /dev/null; then
@@ -38,7 +41,7 @@ if ! command -v zsh &> /dev/null; then
     exit 1
 fi
 
-# ── 2. ตั้งค่า termux.properties ──
+# ── 3. ตั้งค่า termux.properties ──
 echo -e "\033[1;34m🎨 กำลังสร้างไฟล์ตั้งค่าสี...\033[0m"
 mkdir -p ~/.termux
 cat > ~/.termux/termux.properties << 'EOFPROP'
@@ -69,12 +72,12 @@ EOFPROP
 termux-reload-settings
 echo -e "\033[1;32m✅ ตั้งค่าสีและฟอนต์เรียบร้อย!\033[0m"
 
-# ── 3. สร้าง .zshrc ──
+# ── 4. สร้าง .zshrc ──
 echo -e "\033[1;34m✍️ กำลังสร้าง .zshrc...\033[0m"
 
 cat > ~/.zshrc << 'EOFZSHRC'
 # =============================================================
-# 🔥 .zshrc ULTRA BEAUTY — โดย Captaineieiei (FIXED)
+# 🔥 .zshrc ULTRA BEAUTY — โดย Captaineieiei (AUTO n)
 # =============================================================
 
 autoload -U colors && colors
@@ -138,7 +141,7 @@ function captain_highlight() {
 }
 add-zle-hook-widget zle-line-pre-redraw captain_highlight
 
-# ──── Captain Status (FIXED: เก็บ exit code จริง) ────
+# ──── Captain Status ────
 _LAST_EXIT_CODE=0
 function _capture_exit_code() {
     _LAST_EXIT_CODE=$?
@@ -232,24 +235,22 @@ if [[ -z "$TERMUX_STARTUP" ]]; then
 fi
 EOFZSHRC
 
-# ── 4. ตั้ง Zsh เป็นเชลล์หลัก ──
-echo -e "\033[1;34m🔄 กำลังตั้ง Zsh เป็นเชลล์หลัก...\033[0m"
-chsh -s zsh
+# ── 5. ตั้ง Zsh เป็นเชลล์หลัก ──
+echo -e "\033[1;34m🔄 กำลังตั้ง Zsh เป็นเชลล์หลัก (ตอบ n อัตโนมัติ)...\033[0m"
+yes n | chsh -s zsh
 
-# ── 5. เสร็จสิ้น ──
+# ── 6. เสร็จสิ้น ──
 echo ""
 echo -e "\033[1;32m+------------------------------------------------------+\033[0m"
 echo -e "\033[1;32m|                                                      |\033[0m"
 echo -e "\033[1;32m|   🎉 ติดตั้งเสร็จสมบูรณ์!                            |\033[0m"
 echo -e "\033[1;32m|                                                      |\033[0m"
-echo -e "\033[1;32m|   ✅ ใช้ pkg แทน apt (เสถียรกว่า)                   |\033[0m"
-echo -e "\033[1;32m|   ✅ Fixed: captain_status exit code ถูกต้องแล้ว    |\033[0m"
-echo -e "\033[1;32m|   ✅ Added: ข้อความตอน exit shell                   |\033[0m"
+echo -e "\033[1;32m|   ✅ ตอบ n อัตโนมัติทุกคำถาม                        |\033[0m"
 echo -e "\033[1;32m|   ✅ กำลังเปลี่ยนไปใช้ Zsh ทันที!                   |\033[0m"
 echo -e "\033[1;32m|                                                      |\033[0m"
-echo -e "\033[1;32m|   🔥 100% ของเราเอง — ไม่ต้องออกแล้วเปิดใหม่!       |\033[0m"
+echo -e "\033[1;32m|   🔥 100% ของเราเอง — ไม่ต้องกดอะไรอีก!             |\033[0m"
 echo -e "\033[1;32m+------------------------------------------------------+\033[0m"
 echo ""
 
-# ── 🔥 สำคัญ: เปลี่ยนไปใช้ Zsh ทันที ──
+# ── 🔥 เปลี่ยนไปใช้ Zsh ทันที ──
 exec zsh
