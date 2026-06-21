@@ -1,8 +1,8 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # =============================================================
-# 🚀 TERMUX ULTRA BEAUTY — Device Info Edition
-#    โดย Captaineieiei — แสดงข้อมูลมือถือสวยๆ
+# 🚀 TERMUX ULTRA BEAUTY — Straight Line Edition
+#    โดย Captaineieiei — เส้นตรง 100% ไม่ใช้ Emoji
 # =============================================================
 
 # ── ฟังก์ชันพิมพ์เร็ว ──
@@ -16,50 +16,49 @@ typewriter() {
     echo ""
 }
 
-# ── ฟังก์ชันแสดงกรอบเส้นตรง (54 ตัวอักษร) ──
+# ── ฟังก์ชันแสดงกรอบเส้นตรง 54 ตัวอักษร ──
 print_box() {
     local msg="$1"
-    if [[ ${#msg} -gt 50 ]]; then
-        msg="${msg:0:47}..."
-    fi
     local len=${#msg}
-    local pad=$(( 50 - len ))
-    local left_pad=$(( pad / 2 ))
-    local right_pad=$(( pad - left_pad ))
-    local spaced="$(printf '%*s' $left_pad '')${msg}$(printf '%*s' $right_pad '')"
+    local max_len=50
+    if [[ $len -gt $max_len ]]; then
+        msg="${msg:0:$((max_len-3))}..."
+        len=${#msg}
+    fi
+    local pad=$(( max_len - len ))
+    local left=$(( pad / 2 ))
+    local right=$(( pad - left ))
+    local spaced="$(printf '%*s' $left '')${msg}$(printf '%*s' $right '')"
     echo -e "\033[1;36m+------------------------------------------------------+\033[0m"
     echo -e "\033[1;36m|  \033[1;37m${spaced}\033[1;36m  |\033[0m"
     echo -e "\033[1;36m+------------------------------------------------------+\033[0m"
 }
 
-# ── ฟังก์ชันแสดงข้อมูลมือถือแบบสวย ──
+# ── ฟังก์ชันแสดงข้อมูลมือถือ (ASCII ล้วน ไม่มี Emoji) ──
 device_info() {
-    # ดึงข้อมูล
-    local model=$(getprop ro.product.model 2>/dev/null || echo "ไม่พบ")
-    local manufacturer=$(getprop ro.product.manufacturer 2>/dev/null || echo "ไม่พบ")
-    local android=$(getprop ro.build.version.release 2>/dev/null || echo "ไม่พบ")
-    local battery="ไม่ทราบ"
+    local model=$(getprop ro.product.model 2>/dev/null || echo "Unknown")
+    local manufacturer=$(getprop ro.product.manufacturer 2>/dev/null || echo "Unknown")
+    local android=$(getprop ro.build.version.release 2>/dev/null || echo "Unknown")
+    local battery="N/A"
     if command -v termux-battery-status &> /dev/null; then
-        battery=$(termux-battery-status 2>/dev/null | grep -o '"percentage":[0-9]*' | cut -d':' -f2 || echo "ไม่ทราบ")
+        battery=$(termux-battery-status 2>/dev/null | grep -o '"percentage":[0-9]*' | cut -d':' -f2 || echo "N/A")
     fi
-    local storage=$(df -h /data 2>/dev/null | awk 'NR==2 {print "ใช้ "$3" / ทั้งหมด "$2" (เหลือ "$4")"}')
-    local ram=$(free -h 2>/dev/null | awk 'NR==2 {print "ใช้ "$3" / ทั้งหมด "$2" (เหลือ "$4")"}')
+    local storage=$(df -h /data 2>/dev/null | awk 'NR==2 {print "Used "$3" / "$2}')
+    local ram=$(free -h 2>/dev/null | awk 'NR==2 {print "Used "$3" / "$2}')
 
-    # แสดงกรอบ
+    # ── ใช้ printf จัดแนวให้ตรงทุกบรรทัด ──
     echo -e "\033[1;36m+------------------------------------------------------+\033[0m"
-    echo -e "\033[1;36m|  \033[1;37m📱 ข้อมูลอุปกรณ์ของคุณ                          \033[1;36m  |\033[0m"
-    echo -e "\033[1;36m+------------------------------------------------------+\033[0m"
-    printf "\033[1;36m|  \033[1;37m%-20s \033[1;33m%-30s \033[1;36m|\033[0m\n" "📱 รุ่น:" "$manufacturer $model"
-    printf "\033[1;36m|  \033[1;37m%-20s \033[1;33m%-30s \033[1;36m|\033[0m\n" "🤖 Android:" "$android"
-    printf "\033[1;36m|  \033[1;37m%-20s \033[1;33m%-30s \033[1;36m|\033[0m\n" "🔋 แบตเตอรี่:" "${battery}%"
-    printf "\033[1;36m|  \033[1;37m%-20s \033[1;33m%-30s \033[1;36m|\033[0m\n" "💾 ที่เก็บข้อมูล:" "$storage"
-    printf "\033[1;36m|  \033[1;37m%-20s \033[1;33m%-30s \033[1;36m|\033[0m\n" "🧠 RAM:" "$ram"
+    printf "\033[1;36m|  \033[1;37m%-20s \033[1;33m%-30s \033[1;36m|\033[0m\n" "Device:" "$manufacturer $model"
+    printf "\033[1;36m|  \033[1;37m%-20s \033[1;33m%-30s \033[1;36m|\033[0m\n" "Android:" "$android"
+    printf "\033[1;36m|  \033[1;37m%-20s \033[1;33m%-30s \033[1;36m|\033[0m\n" "Battery:" "${battery}%"
+    printf "\033[1;36m|  \033[1;37m%-20s \033[1;33m%-30s \033[1;36m|\033[0m\n" "Storage:" "$storage"
+    printf "\033[1;36m|  \033[1;37m%-20s \033[1;33m%-30s \033[1;36m|\033[0m\n" "RAM:" "$ram"
     echo -e "\033[1;36m+------------------------------------------------------+\033[0m"
 }
 
 clear
 
-# ── แสดง Header ──
+# ── Header ──
 echo -e "\033[1;33m"
 figlet -f big "TERMUX" 2>/dev/null || figlet -f standard "TERMUX" 2>/dev/null
 echo -e "\033[0m"
@@ -76,10 +75,9 @@ done
 echo -e " \033[1;32m100%\033[0m"
 echo ""
 
-# ── ตั้งค่า apt ให้เงียบ ──
 export DEBIAN_FRONTEND=noninteractive
 
-# ── 0. อัปเกรดระบบและแก้ curl ──
+# ── อัปเกรดและแก้ curl ──
 print_box "🔧 อัปเกรดระบบและแก้ curl"
 {
     apt update -y
@@ -96,7 +94,7 @@ if ! curl --version &> /dev/null; then
 fi
 echo -e "\033[1;32m✅ ระบบและ curl พร้อมใช้งาน!\033[0m"
 
-# ── 1. ติดตั้ง figlet, zsh, termux-api (สำหรับเช็คแบต) ──
+# ── ติดตั้งแพ็กเกจ ──
 print_box "📦 ติดตั้งแพ็กเกจที่จำเป็น"
 {
     apt install -y -o Dpkg::Options::="--force-confold" figlet zsh curl termux-api
@@ -108,7 +106,7 @@ if ! command -v zsh &> /dev/null; then
     exit 1
 fi
 
-# ── 2. ตั้งค่า termux.properties ──
+# ── ตั้งค่า termux.properties ──
 print_box "🎨 ตั้งค่าสีและฟอนต์"
 mkdir -p ~/.termux
 cat > ~/.termux/termux.properties << 'EOFPROP'
@@ -139,11 +137,11 @@ EOFPROP
 termux-reload-settings > /dev/null 2>&1
 echo -e "\033[1;32m✅ ตั้งค่าเรียบร้อย\033[0m"
 
-# ── 3. สร้าง .zshrc ──
+# ── สร้าง .zshrc ──
 print_box "✍️  สร้างไฟล์ .zshrc"
 cat > ~/.zshrc << 'EOFZSHRC'
 # =============================================================
-# 🔥 .zshrc ULTRA BEAUTY — Device Info Edition
+# 🔥 .zshrc ULTRA BEAUTY — Straight Line Edition
 # =============================================================
 
 autoload -U colors && colors
@@ -163,24 +161,24 @@ typewriter() {
     echo ""
 }
 
-# ── ฟังก์ชันแสดงข้อมูลมือถือ (ใช้ใน Startup) ──
+# ── ฟังก์ชันแสดงข้อมูลมือถือ (ASCII ล้วน ไม่มี Emoji) ──
 device_info() {
-    local model=$(getprop ro.product.model 2>/dev/null || echo "ไม่พบ")
-    local manufacturer=$(getprop ro.product.manufacturer 2>/dev/null || echo "ไม่พบ")
-    local android=$(getprop ro.build.version.release 2>/dev/null || echo "ไม่พบ")
-    local battery="ไม่ทราบ"
+    local model=$(getprop ro.product.model 2>/dev/null || echo "Unknown")
+    local manufacturer=$(getprop ro.product.manufacturer 2>/dev/null || echo "Unknown")
+    local android=$(getprop ro.build.version.release 2>/dev/null || echo "Unknown")
+    local battery="N/A"
     if command -v termux-battery-status &> /dev/null; then
-        battery=$(termux-battery-status 2>/dev/null | grep -o '"percentage":[0-9]*' | cut -d':' -f2 || echo "ไม่ทราบ")
+        battery=$(termux-battery-status 2>/dev/null | grep -o '"percentage":[0-9]*' | cut -d':' -f2 || echo "N/A")
     fi
-    local storage=$(df -h /data 2>/dev/null | awk 'NR==2 {print "ใช้ "$3" / "$2}')
-    local ram=$(free -h 2>/dev/null | awk 'NR==2 {print "ใช้ "$3" / "$2}')
+    local storage=$(df -h /data 2>/dev/null | awk 'NR==2 {print "Used "$3" / "$2}')
+    local ram=$(free -h 2>/dev/null | awk 'NR==2 {print "Used "$3" / "$2}')
 
     echo -e "\033[1;36m+------------------------------------------------------+\033[0m"
-    printf "\033[1;36m|  \033[1;37m📱\033[1;33m %-48s \033[1;36m|\033[0m\n" "$manufacturer $model"
-    printf "\033[1;36m|  \033[1;37m🤖 Android:\033[1;33m %-38s \033[1;36m|\033[0m\n" "$android"
-    printf "\033[1;36m|  \033[1;37m🔋 แบตเตอรี่:\033[1;33m %-38s \033[1;36m|\033[0m\n" "${battery}%"
-    printf "\033[1;36m|  \033[1;37m💾 ที่เก็บ:\033[1;33m %-39s \033[1;36m|\033[0m\n" "$storage"
-    printf "\033[1;36m|  \033[1;37m🧠 RAM:\033[1;33m %-41s \033[1;36m|\033[0m\n" "$ram"
+    printf "\033[1;36m|  \033[1;37m%-20s \033[1;33m%-30s \033[1;36m|\033[0m\n" "Device:" "$manufacturer $model"
+    printf "\033[1;36m|  \033[1;37m%-20s \033[1;33m%-30s \033[1;36m|\033[0m\n" "Android:" "$android"
+    printf "\033[1;36m|  \033[1;37m%-20s \033[1;33m%-30s \033[1;36m|\033[0m\n" "Battery:" "${battery}%"
+    printf "\033[1;36m|  \033[1;37m%-20s \033[1;33m%-30s \033[1;36m|\033[0m\n" "Storage:" "$storage"
+    printf "\033[1;36m|  \033[1;37m%-20s \033[1;33m%-30s \033[1;36m|\033[0m\n" "RAM:" "$ram"
     echo -e "\033[1;36m+------------------------------------------------------+\033[0m"
 }
 
@@ -289,7 +287,7 @@ alias update='pkg update && pkg upgrade -y'
 alias install='pkg install'
 alias remove='pkg uninstall'
 alias nano='nano -c'
-alias device='device_info'   # พิมพ์ device เพื่อดูข้อมูลมือถือทุกเมื่อ
+alias device='device_info'
 
 # ──── Weather ────
 weather() {
@@ -311,7 +309,7 @@ function _captain_farewell() {
 }
 add-zsh-hook zshexit _captain_farewell
 
-# ──── STARTUP BANNER (พร้อมแสดงข้อมูลมือถือ) ────
+# ──── STARTUP BANNER ────
 if [[ -z "$TERMUX_STARTUP" ]]; then
     export TERMUX_STARTUP=1
     clear
@@ -322,7 +320,7 @@ if [[ -z "$TERMUX_STARTUP" ]]; then
     typewriter "📅  วันที่: $(date +"%A, %d %B %Y")" 0.02
     typewriter "🕒  เวลา: $(date +"%H:%M:%S")" 0.02
     echo ""
-    device_info   # <--- แสดงข้อมูลมือถือสวยๆ ตรงนี้!
+    device_info
     echo ""
     typewriter "💡  คำสั่งลัด:" 0.03
     typewriter "   ll      = ดูไฟล์ทั้งหมด" 0.02
@@ -335,17 +333,17 @@ fi
 EOFZSHRC
 echo -e "\033[1;32m✅ สร้าง .zshrc สำเร็จ\033[0m"
 
-# ── 4. ตั้ง Zsh ──
+# ── ตั้ง Zsh ──
 print_box "🔄 ตั้ง Zsh เป็นเชลล์หลัก"
 chsh -s zsh > /dev/null 2>&1
 echo -e "\033[1;32m✅ เปลี่ยนเชลล์สำเร็จ\033[0m"
 
-# ── 5. แสดงข้อมูลมือถือก่อนเข้า Zsh ──
+# ── แสดงข้อมูลมือถือก่อนเข้า Zsh ──
 echo ""
 device_info
 echo ""
 
-# ── 6. เสร็จสิ้น ──
+# ── เสร็จสิ้น ──
 echo -e "\033[1;32m+------------------------------------------------------+\033[0m"
 echo -e "\033[1;32m|                                                      |\033[0m"
 echo -e "\033[1;32m|   🎉  ติดตั้งเสร็จสมบูรณ์!                           |\033[0m"
