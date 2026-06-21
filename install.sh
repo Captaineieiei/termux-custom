@@ -1,11 +1,20 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # =============================================================
-# 🚀 TERMUX ULTRA BEAUTY — Premium Edition
-#    โดย Captaineieiei — ดีไซน์สวยระดับพรีเมียม
+# 🚀 TERMUX ULTRA BEAUTY — Typewriter Edition
+#    โดย Captaineieiei — ข้อความพิมพ์ทีละตัวเหมือนดีด!
 # =============================================================
 
-clear
+# ── ฟังก์ชันพิมพ์ทีละตัว ──
+typewriter() {
+    local text="$1"
+    local delay="${2:-0.05}"  # ดีเลย์ 0.05 วินาที
+    for ((i=0; i<${#text}; i++)); do
+        echo -n "${text:$i:1}"
+        sleep "$delay"
+    done
+    echo ""
+}
 
 # ── ฟังก์ชันแสดงกรอบข้อความ ──
 print_box() {
@@ -17,18 +26,21 @@ print_box() {
     echo -e "\033[1;36m└─${border}─┘\033[0m"
 }
 
+clear
+
 # ── อนิเมชั่นเปิดตัว ──
 echo -e "\033[1;33m"
 figlet -f big "TERMUX" 2>/dev/null || figlet -f standard "TERMUX" 2>/dev/null
 echo -e "\033[0m"
-echo -e "\033[1;35m          ✨ ULTRA BEAUTY INSTALLER ✨\033[0m"
-echo -e "\033[1;32m               โดย Captaineieiei\033[0m"
+
+typewriter "          ✨ ULTRA BEAUTY INSTALLER ✨" 0.06
+typewriter "               โดย Captaineieiei" 0.06
 echo ""
 
 sleep 0.5
 
 # ── อนิเมชั่นโหลด ──
-echo -e "\033[1;36m⏳ กำลังเตรียมระบบ..."
+typewriter "⏳ กำลังเตรียมระบบ..." 0.05
 for i in {1..20}; do
     echo -ne "\033[1;32m█\033[0m"
     sleep 0.05
@@ -46,11 +58,11 @@ echo ""
 export DEBIAN_FRONTEND=noninteractive
 
 # ── ติดตั้ง figlet, zsh, curl ──
-echo -e "\033[1;34m▶ กำลังอัปเดตระบบ...\033[0m"
+typewriter "▶ กำลังอัปเดตระบบ..." 0.05
 apt update -y > /dev/null 2>&1
 echo -e "\033[1;32m✅ อัปเดตสำเร็จ\033[0m"
 
-echo -e "\033[1;34m▶ กำลังติดตั้ง figlet, zsh, curl...\033[0m"
+typewriter "▶ กำลังติดตั้ง figlet, zsh, curl..." 0.05
 apt install -y -o Dpkg::Options::="--force-confold" figlet zsh curl > /dev/null 2>&1
 echo -e "\033[1;32m✅ ติดตั้งสำเร็จ\033[0m"
 
@@ -96,7 +108,7 @@ echo -e "\033[1;32m✅ ตั้งค่าเรียบร้อย\033[0m"
 print_box "✍️  สร้างไฟล์ .zshrc"
 cat > ~/.zshrc << 'EOFZSHRC'
 # =============================================================
-# 🔥 .zshrc ULTRA BEAUTY — Premium Edition
+# 🔥 .zshrc ULTRA BEAUTY — Typewriter Edition
 # =============================================================
 
 autoload -U colors && colors
@@ -104,6 +116,17 @@ setopt PROMPT_SUBST
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_SAVE_NO_DUPS
 setopt PROMPT_SP
+
+# ── ฟังก์ชันพิมพ์ทีละตัว (ใช้ในตอนเปิด) ──
+typewriter() {
+    local text="$1"
+    local delay="${2:-0.04}"
+    for ((i=0; i<${#text}; i++)); do
+        echo -n "${text:$i:1}"
+        sleep "$delay"
+    done
+    echo ""
+}
 
 # ──── Captain Suggest ────
 function captain_suggest() {
@@ -231,26 +254,24 @@ function _captain_farewell() {
 }
 add-zsh-hook zshexit _captain_farewell
 
-# ──── STARTUP BANNER ────
+# ──── STARTUP BANNER (Typewriter Effect) ────
 if [[ -z "$TERMUX_STARTUP" ]]; then
     export TERMUX_STARTUP=1
     clear
-    echo -e "\033[1;36m🚀 กำลังโหลด TERMUX ULTRA...\033[0m"
-    sleep 0.2
     figlet -f standard "TERMUX" 2>/dev/null | sed 's/^/  /'
     echo ""
-    echo -e "\033[1;33m          ✨ WELCOME BACK, CAPTAIN! ✨\033[0m"
+    typewriter "          ✨ WELCOME BACK, CAPTAIN! ✨" 0.06
     echo ""
-    echo -e "\033[1;34m📅  วันที่:\033[0m \033[1;37m$(date +"%A, %d %B %Y")\033[0m"
-    echo -e "\033[1;34m🕒  เวลา:\033[0m \033[1;37m$(date +"%H:%M:%S")\033[0m"
-    echo -e "\033[1;34m👤  ผู้ใช้:\033[0m \033[1;37m$(whoami)\033[0m"
+    typewriter "📅  วันที่: $(date +"%A, %d %B %Y")" 0.04
+    typewriter "🕒  เวลา: $(date +"%H:%M:%S")" 0.04
+    typewriter "👤  ผู้ใช้: $(whoami)" 0.04
     echo ""
-    echo -e "\033[1;32m💡  คำสั่งลัด:\033[0m"
-    echo -e "   \033[1;32mll\033[0m      = ดูไฟล์ทั้งหมด"
-    echo -e "   \033[1;32mupdate\033[0m  = อัปเดตระบบ"
-    echo -e "   \033[1;32m..\033[0m      = ย้อนกลับ 1 โฟลเดอร์"
-    echo -e "   \033[1;32mweather\033[0m = เช็คสภาพอากาศ"
-    echo -e "   \033[1;32mclear\033[0m   = ล้างหน้าจอ"
+    typewriter "💡  คำสั่งลัด:" 0.05
+    typewriter "   ll      = ดูไฟล์ทั้งหมด" 0.04
+    typewriter "   update  = อัปเดตระบบ" 0.04
+    typewriter "   ..      = ย้อนกลับ 1 โฟลเดอร์" 0.04
+    typewriter "   weather = เช็คสภาพอากาศ" 0.04
+    typewriter "   clear   = ล้างหน้าจอ" 0.04
     echo ""
 fi
 EOFZSHRC
@@ -265,13 +286,11 @@ echo -e "\033[1;32m✅ เปลี่ยนเชลล์สำเร็จ\03
 echo ""
 echo -e "\033[1;32m┌──────────────────────────────────────────────────────┐\033[0m"
 echo -e "\033[1;32m│                                                      │\033[0m"
-echo -e "\033[1;32m│   🎉  ติดตั้งเสร็จสมบูรณ์!                           │\033[0m"
+typewriter "│   🎉  ติดตั้งเสร็จสมบูรณ์!                           │" 0.05
+typewriter "│   ✅  ระบบพร้อมใช้งาน 100%                          │" 0.05
+typewriter "│   ✅  กำลังเปลี่ยนไปใช้ Zsh ทันที                    │" 0.05
 echo -e "\033[1;32m│                                                      │\033[0m"
-echo -e "\033[1;32m│   ✅  ระบบพร้อมใช้งาน 100%                          │\033[0m"
-echo -e "\033[1;32m│   ✅  กำลังเปลี่ยนไปใช้ Zsh ทันที                    │\033[0m"
-echo -e "\033[1;32m│                                                      │\033[0m"
-echo -e "\033[1;32m│   🔥  คราวนี้สวยแบบพรีเมียม!                         │\033[0m"
-echo -e "\033[1;32m│                                                      │\033[0m"
+typewriter "│   🔥  คราวนี้ข้อความพิมพ์ทีละตัว!                   │" 0.05
 echo -e "\033[1;32m└──────────────────────────────────────────────────────┘\033[0m"
 echo ""
 
