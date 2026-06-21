@@ -1,50 +1,70 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # =============================================================
-# 🚀 TERMUX ULTRA BEAUTY — Full Auto Installer
-#    โดย Captaineieiei — ไม่ถามอะไรเลย ติดตั้งอัตโนมัติ 100%
+# 🚀 TERMUX ULTRA BEAUTY — Premium Edition
+#    โดย Captaineieiei — ดีไซน์สวยระดับพรีเมียม
 # =============================================================
 
 clear
 
+# ── ฟังก์ชันแสดงกรอบข้อความ ──
+print_box() {
+    local msg="$1"
+    local len=${#msg}
+    local border=$(printf '%*s' "$((len+4))" | tr ' ' '─')
+    echo -e "\033[1;36m┌─${border}─┐\033[0m"
+    echo -e "\033[1;36m│  \033[1;37m${msg}\033[1;36m  │\033[0m"
+    echo -e "\033[1;36m└─${border}─┘\033[0m"
+}
+
 # ── อนิเมชั่นเปิดตัว ──
-echo -e "\033[1;36m🔧 กำลังติดตั้ง ULTRA BEAUTY (โหมดอัตโนมัติ 100%)...\033[0m"
+echo -e "\033[1;33m"
+figlet -f big "TERMUX" 2>/dev/null || figlet -f standard "TERMUX" 2>/dev/null
+echo -e "\033[0m"
+echo -e "\033[1;35m          ✨ ULTRA BEAUTY INSTALLER ✨\033[0m"
+echo -e "\033[1;32m               โดย Captaineieiei\033[0m"
 echo ""
 
-for i in {1..10}; do
-    echo -ne "\033[1;32m["
-    for j in $(seq 1 $i); do
-        echo -ne "█"
-    done
-    for j in $(seq $i 9); do
-        echo -ne "░"
-    done
-    echo -ne "] $((i*10))%\033[0m\r"
-    sleep 0.2
-done
-
-echo ""
-echo -e "\033[1;32m✅ พร้อมติดตั้ง!\033[0m"
 sleep 0.5
 
-# ── ตั้งค่าให้ apt ไม่ถามอะไรทั้งสิ้น ──
+# ── อนิเมชั่นโหลด ──
+echo -e "\033[1;36m⏳ กำลังเตรียมระบบ..."
+for i in {1..20}; do
+    echo -ne "\033[1;32m█\033[0m"
+    sleep 0.05
+done
+echo -e " \033[1;32m100%\033[0m"
+echo ""
+
+sleep 0.3
+
+# ── เริ่มติดตั้ง ──
+print_box "📦 ติดตั้งแพ็กเกจที่จำเป็น"
+echo ""
+
+# ── ตั้งค่า apt ให้เงียบ ──
 export DEBIAN_FRONTEND=noninteractive
 
-# ── 1. อัปเดตและติดตั้งแพ็คเกจด้วย apt (ไม่ถาม) ──
-echo -e "\033[1;34m📦 กำลังอัปเดตและติดตั้ง figlet, zsh, curl...\033[0m"
-apt update -y
-apt install -y -o Dpkg::Options::="--force-confold" figlet zsh curl
+# ── ติดตั้ง figlet, zsh, curl ──
+echo -e "\033[1;34m▶ กำลังอัปเดตระบบ...\033[0m"
+apt update -y > /dev/null 2>&1
+echo -e "\033[1;32m✅ อัปเดตสำเร็จ\033[0m"
 
-# ── ตรวจสอบว่า zsh ติดตั้งสำเร็จ ──
+echo -e "\033[1;34m▶ กำลังติดตั้ง figlet, zsh, curl...\033[0m"
+apt install -y -o Dpkg::Options::="--force-confold" figlet zsh curl > /dev/null 2>&1
+echo -e "\033[1;32m✅ ติดตั้งสำเร็จ\033[0m"
+
+# ── ตรวจสอบ zsh ──
 if ! command -v zsh &> /dev/null; then
-    echo -e "\033[1;31m❌ ติดตั้ง zsh ไม่สำเร็จ! ตรวจสอบเน็ตแล้วรันใหม่\033[0m"
+    echo -e "\033[1;31m❌ ติดตั้ง zsh ไม่สำเร็จ!\033[0m"
     exit 1
 fi
 
-# ── 2. ตั้งค่า termux.properties (ไม่ถาม) ──
-echo -e "\033[1;34m🎨 กำลังสร้างไฟล์ตั้งค่าสี...\033[0m"
+# ── ตั้งค่า termux.properties ──
+print_box "🎨 ตั้งค่าสีและฟอนต์"
 mkdir -p ~/.termux
 cat > ~/.termux/termux.properties << 'EOFPROP'
+# Tokyo Night Theme
 background=#1a1b26
 foreground=#c0caf5
 cursor_color=#f7768e
@@ -70,20 +90,20 @@ hide-soft-keyboard-on-startup=true
 terminal-transcript-rows=5000
 EOFPROP
 termux-reload-settings
-echo -e "\033[1;32m✅ ตั้งค่าสีและฟอนต์เรียบร้อย!\033[0m"
+echo -e "\033[1;32m✅ ตั้งค่าเรียบร้อย\033[0m"
 
-# ── 3. สร้าง .zshrc (ไม่ถาม) ──
-echo -e "\033[1;34m✍️ กำลังสร้าง .zshrc...\033[0m"
-
+# ── สร้าง .zshrc ──
+print_box "✍️  สร้างไฟล์ .zshrc"
 cat > ~/.zshrc << 'EOFZSHRC'
 # =============================================================
-# 🔥 .zshrc ULTRA BEAUTY — Full Auto (ไม่ถาม)
+# 🔥 .zshrc ULTRA BEAUTY — Premium Edition
 # =============================================================
 
 autoload -U colors && colors
 setopt PROMPT_SUBST
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_SAVE_NO_DUPS
+setopt PROMPT_SP
 
 # ──── Captain Suggest ────
 function captain_suggest() {
@@ -211,7 +231,7 @@ function _captain_farewell() {
 }
 add-zsh-hook zshexit _captain_farewell
 
-# ──── STARTUP BANNER (เฉพาะครั้งแรก) ────
+# ──── STARTUP BANNER ────
 if [[ -z "$TERMUX_STARTUP" ]]; then
     export TERMUX_STARTUP=1
     clear
@@ -234,23 +254,25 @@ if [[ -z "$TERMUX_STARTUP" ]]; then
     echo ""
 fi
 EOFZSHRC
+echo -e "\033[1;32m✅ สร้าง .zshrc สำเร็จ\033[0m"
 
-# ── 4. ตั้ง Zsh เป็นเชลล์หลัก (ไม่ถาม) ──
-echo -e "\033[1;34m🔄 กำลังตั้ง Zsh เป็นเชลล์หลัก...\033[0m"
+# ── ตั้ง Zsh เป็นเชลล์หลัก ──
+print_box "🔄 ตั้ง Zsh เป็นเชลล์หลัก"
 chsh -s zsh
+echo -e "\033[1;32m✅ เปลี่ยนเชลล์สำเร็จ\033[0m"
 
-# ── 5. เสร็จสิ้น ──
+# ── เสร็จสิ้น ──
 echo ""
-echo -e "\033[1;32m+------------------------------------------------------+\033[0m"
-echo -e "\033[1;32m|                                                      |\033[0m"
-echo -e "\033[1;32m|   🎉 ติดตั้งเสร็จสมบูรณ์! (ไม่ถามเลย)               |\033[0m"
-echo -e "\033[1;32m|                                                      |\033[0m"
-echo -e "\033[1;32m|   ✅ ใช้ apt + --force-confold + -y                  |\033[0m"
-echo -e "\033[1;32m|   ✅ กำลังเปลี่ยนไปใช้ Zsh ทันที!                   |\033[0m"
-echo -e "\033[1;32m|                                                      |\033[0m"
-echo -e "\033[1;32m|   🔥 100% ของเราเอง — วางแล้วรันเลย!               |\033[0m"
-echo -e "\033[1;32m+------------------------------------------------------+\033[0m"
+echo -e "\033[1;32m┌──────────────────────────────────────────────────────┐\033[0m"
+echo -e "\033[1;32m│                                                      │\033[0m"
+echo -e "\033[1;32m│   🎉  ติดตั้งเสร็จสมบูรณ์!                           │\033[0m"
+echo -e "\033[1;32m│                                                      │\033[0m"
+echo -e "\033[1;32m│   ✅  ระบบพร้อมใช้งาน 100%                          │\033[0m"
+echo -e "\033[1;32m│   ✅  กำลังเปลี่ยนไปใช้ Zsh ทันที                    │\033[0m"
+echo -e "\033[1;32m│                                                      │\033[0m"
+echo -e "\033[1;32m│   🔥  คราวนี้สวยแบบพรีเมียม!                         │\033[0m"
+echo -e "\033[1;32m│                                                      │\033[0m"
+echo -e "\033[1;32m└──────────────────────────────────────────────────────┘\033[0m"
 echo ""
 
-# ── 🔥 เปลี่ยนไปใช้ Zsh ทันที ──
 exec zsh
