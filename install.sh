@@ -2,8 +2,7 @@
 
 # =============================================================
 # 🚀 TERMUX ULTRA BEAUTY — All-in-One Installer (FIXED)
-#    โดย Captaineieiei — รันแล้วใช้ได้เลย ไม่ต้องออก!
-#    แก้ไข: captain_status exit code ผิด, เพิ่มข้อความตอน exit
+#    โดย Captaineieiei — ใช้ pkg แทน apt เพื่อความเสถียร
 # =============================================================
 
 clear
@@ -28,19 +27,14 @@ echo ""
 echo -e "\033[1;32m✅ พร้อมติดตั้ง!\033[0m"
 sleep 0.5
 
-# ── ตั้งค่าให้ apt ไม่ถามอะไรทั้งสิ้น ──
-export DEBIAN_FRONTEND=noninteractive
+# ── 1. อัปเดตและติดตั้งแพ็คเกจด้วย pkg (ไม่ต้องใช้ apt) ──
+echo -e "\033[1;34m📦 กำลังอัปเดตและติดตั้ง figlet, zsh, curl...\033[0m"
+pkg update -y
+pkg install -y figlet zsh curl
 
-# ── 1. ติดตั้ง figlet และ Zsh ──
-echo -e "\033[1;34m📦 กำลังติดตั้ง figlet, zsh, curl...\033[0m"
-apt update -y
-# หมายเหตุ: --force-confold เป็น dpkg option ต้องส่งผ่าน -o Dpkg::Options::=
-# ใช้แบบเดิม (apt install -y --force-confold ...) จะ error: "not understood"
-apt install -y -o Dpkg::Options::="--force-confold" figlet zsh curl
-
-# ── ตรวจสอบว่าติดตั้ง zsh สำเร็จจริงก่อนไปขั้นต่อไป ──
+# ── ตรวจสอบว่าติดตั้ง zsh สำเร็จ ──
 if ! command -v zsh &> /dev/null; then
-    echo -e "\033[1;31m❌ ติดตั้ง zsh ไม่สำเร็จ! ตรวจสอบการเชื่อมต่อเน็ตหรือรัน 'pkg install zsh' ด้วยตัวเองแล้วรันสคริปต์นี้ใหม่\033[0m"
+    echo -e "\033[1;31m❌ ติดตั้ง zsh ไม่สำเร็จ! กรุณาตรวจสอบการเชื่อมต่อเน็ตแล้วรันใหม่\033[0m"
     exit 1
 fi
 
@@ -144,8 +138,7 @@ function captain_highlight() {
 }
 add-zle-hook-widget zle-line-pre-redraw captain_highlight
 
-# ──── Captain Status (FIXED: เก็บ exit code จริงของคำสั่งล่าสุด) ────
-# ต้องเก็บ $? ทันทีใน precmd hook ก่อนมีคำสั่งอื่นมาทับค่า
+# ──── Captain Status (FIXED: เก็บ exit code จริง) ────
 _LAST_EXIT_CODE=0
 function _capture_exit_code() {
     _LAST_EXIT_CODE=$?
@@ -200,7 +193,7 @@ weather() {
     curl -s "wttr.in/${1:-Bangkok}?m" | head -n 20
 }
 
-# ──── EXIT MESSAGE (ใหม่: แสดงข้อความตอนออกจาก shell) ────
+# ──── EXIT MESSAGE ────
 function _captain_farewell() {
     echo ""
     echo -e "\033[1;35m+------------------------------------------------------+\033[0m"
@@ -215,7 +208,7 @@ function _captain_farewell() {
 }
 add-zsh-hook zshexit _captain_farewell
 
-# ──── STARTUP BANNER (แสดงเฉพาะครั้งแรก) ────
+# ──── STARTUP BANNER (เฉพาะครั้งแรก) ────
 if [[ -z "$TERMUX_STARTUP" ]]; then
     export TERMUX_STARTUP=1
     clear
@@ -249,6 +242,7 @@ echo -e "\033[1;32m+------------------------------------------------------+\033[
 echo -e "\033[1;32m|                                                      |\033[0m"
 echo -e "\033[1;32m|   🎉 ติดตั้งเสร็จสมบูรณ์!                            |\033[0m"
 echo -e "\033[1;32m|                                                      |\033[0m"
+echo -e "\033[1;32m|   ✅ ใช้ pkg แทน apt (เสถียรกว่า)                   |\033[0m"
 echo -e "\033[1;32m|   ✅ Fixed: captain_status exit code ถูกต้องแล้ว    |\033[0m"
 echo -e "\033[1;32m|   ✅ Added: ข้อความตอน exit shell                   |\033[0m"
 echo -e "\033[1;32m|   ✅ กำลังเปลี่ยนไปใช้ Zsh ทันที!                   |\033[0m"
@@ -257,5 +251,5 @@ echo -e "\033[1;32m|   🔥 100% ของเราเอง — ไม่ต้
 echo -e "\033[1;32m+------------------------------------------------------+\033[0m"
 echo ""
 
-# ── 🔥 สำคัญ: เปลี่ยนไปใช้ Zsh ทันทีโดยไม่ต้องออก ──
+# ── 🔥 สำคัญ: เปลี่ยนไปใช้ Zsh ทันที ──
 exec zsh
