@@ -1,97 +1,129 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # =============================================================
-# 🚀 Termux Ultimate Beautifier
-#    โดย Captaineieiei
-#    ทำให้ Termux ของคุณสวยแบบมืออาชีพ (เส้นตรงเป๊ะ)
+# 🚀 Termux Custom Zsh — โดย Captaineieiei
+#    ปลั๊กอินทุกตัวเขียนเอง 100% ไม่มีของคนอื่น!
 # =============================================================
 
 clear
 
-# ── กรอบ ASCII Art (แบบธรรมดา รับรองเส้นตรง) ──
 echo ""
 echo "+------------------------------------------------------+"
 echo "|                                                      |"
-echo "|   ████████╗███████╗██████╗ ███╗   ███╗██╗   ██╗██╗  ██╗ |"
-echo "|   ╚══██╔══╝██╔════╝██╔══██╗████╗ ████║██║   ██║╚██╗██╔╝ |"
-echo "|      ██║   █████╗  ██████╔╝██╔████╔██║██║   ██║ ╚███╔╝  |"
-echo "|      ██║   ██╔══╝  ██╔══██╗██║╚██╔╝██║██║   ██║ ██╔██╗  |"
-echo "|      ██║   ███████╗██║  ██║██║ ╚═╝ ██║╚██████╔╝██╔╝ ██╗ |"
-echo "|      ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═╝ |"
+echo "|   ██████╗ █████╗ ██████╗ ████████╗ █████╗ ██╗███╗   ██╗ |"
+echo "|   ██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗██║████╗  ██║ |"
+echo "|   ██████╔╝███████║██████╔╝   ██║   ███████║██║██╔██╗ ██║ |"
+echo "|   ██╔═══╝ ██╔══██║██╔═══╝    ██║   ██╔══██║██║██║╚██╗██║ |"
+echo "|   ██║     ██║  ██║██║        ██║   ██║  ██║██║██║ ╚████║ |"
+echo "|   ╚═╝     ╚═╝  ╚═╝╚═╝        ╚═╝   ╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ |"
 echo "|                                                      |"
-echo "|         ✨ Termux Custom Theme Installer ✨          |"
-echo "|               โดย Captaineieiei                     |"
+echo "|      ✨ ปลั๊กอิน Zsh เขียนเองโดย Captaineieiei ✨     |"
+echo "|              ไม่มีของใครปน 100%!                     |"
 echo "+------------------------------------------------------+"
 echo ""
 
 sleep 1
 
-echo "🔥 เริ่มติดตั้งธีมและเครื่องมือ Termux แบบจัดเต็ม..."
-echo ""
+# ── 1. ติดตั้ง Zsh ──
+echo "📦 กำลังติดตั้ง Zsh..."
+pkg update -y && pkg upgrade -y
+pkg install zsh curl -y
 
-# ── 1. สร้างโฟลเดอร์ .termux ──
-mkdir -p ~/.termux
+# ── 2. สร้างไฟล์ .zshrc ของเราเอง (เขียนปลั๊กอินเองทั้งหมด) ──
+echo "✍️ กำลังสร้าง .zshrc พร้อมปลั๊กอินของเราเอง..."
 
-# ── 2. เขียนไฟล์ termux.properties (ธีมระดับพรีเมียม) ──
-echo "📝 กำลังสร้างไฟล์ตั้งค่าสี..."
+cat > ~/.zshrc << 'EOF'
+# =============================================================
+# 🔥 .zshrc — โดย Captaineieiei
+#    ปลั๊กอินทุกตัวเขียนเอง 100% (ไม่โคลนของใคร!)
+# =============================================================
 
-cat > ~/.termux/termux.properties << 'EOF'
-# =====================================================
-# 🎨 Termux Premium Theme — Captaineieiei Edition
-#    สีสันพรีเมียม สบายตา ดูมีระดับ
-# =====================================================
+# ── ตั้งค่าสี ──
+autoload -U colors && colors
 
-# ── พื้นหลังและตัวอักษร ──
-background=#1a1b26          # สีน้ำเงินเข้ม (Tokyo Night)
-foreground=#c0caf5          # สีขาวอมฟ้า อ่านง่าย
-cursor_color=#f7768e        # สีชมพูสด เคอร์เซอร์โดดเด่น
+# ─────────────────────────────────────────────────────────────
+# 🧠 ปลั๊กอินที่ 1: Captain Suggest (แนะนำคำสั่งจากประวัติ)
+# ─────────────────────────────────────────────────────────────
+# ทำงาน: เมื่อคุณพิมพ์อะไร มันจะแนะนำคำสั่งล่าสุดที่ตรงกัน
+#        กดปุ่ม → (ลูกศรขวา) เพื่อเติมคำแนะนำอัตโนมัติ
 
-# ── 16 สีหลัก (Tokyo Night Palette) ──
-color0=#15161e              # ดำ
-color1=#f7768e              # แดงอมชมพู
-color2=#9ece6a              # เขียวสด
-color3=#e0af68              # เหลืองทอง
-color4=#7aa2f7              # ฟ้าใส
-color5=#bb9af7              # ม่วงอ่อน
-color6=#7dcfff              # ฟ้าคราม
-color7=#a9b1d6              # เทาอ่อน
-color8=#414868              # เทาเข้ม
-color9=#f7768e              # แดง
-color10=#9ece6a             # เขียว
-color11=#e0af68             # เหลือง
-color12=#7aa2f7             # ฟ้า
-color13=#bb9af7             # ม่วง
-color14=#7dcfff             # ฟ้าคราม
-color15=#c0caf5             # ขาว
+function captain_suggest() {
+    # ใช้ history (fc -l) หาคำสั่งล่าสุดที่ตรงกับสิ่งที่พิมพ์
+    local suggestion=$(fc -l 1 | grep "$BUFFER" | tail -1 | sed 's/^ *[0-9]* *//')
+    
+    # ถ้าเจอ และไม่ใช่คำเดิม ให้แสดงเป็นสีเทาทางขวา
+    if [[ -n $suggestion && $suggestion != $BUFFER ]]; then
+        RPROMPT="%F{8}$suggestion%f"
+    else
+        RPROMPT=""
+    fi
+}
 
-# ── ฟอนต์และขนาด ──
-font=DejaVu Sans Mono
-font-size=16
+# เรียกใช้ captain_suggest ทุกครั้งที่พิมพ์ (ทุกครั้งที่ข้อความเปลี่ยน)
+autoload -Uz add-zle-hook-widget
+add-zle-hook-widget zle-line-pre-redraw captain_suggest
 
-# ── เปิดเต็มจอ ──
-fullscreen=true
+# ฟังก์ชันสำหรับปุ่มลูกศรขวา (เติมคำแนะนำ)
+function accept_suggestion() {
+    if [[ -n $RPROMPT ]]; then
+        BUFFER=$RPROMPT      # เอาคำแนะนำมาใส่ในบรรทัด
+        RPROMPT=""           # ล้างคำแนะนำ
+        zle reset-prompt
+    fi
+}
+zle -N accept_suggestion
+bindkey '^[[C' accept_suggestion   # ผูกปุ่ม → (Right Arrow)
 
-# ── ซ่อนแป้นพิมพ์ตอนเปิด ──
-hide-soft-keyboard-on-startup=true
+# ─────────────────────────────────────────────────────────────
+# 🧠 ปลั๊กอินที่ 2: Captain Highlight (ไฮไลท์คำสั่ง)
+# ─────────────────────────────────────────────────────────────
+# ทำงาน: ถ้าคำสั่งที่พิมพ์มีอยู่จริง → สีเขียว
+#        ถ้าไม่มี → สีแดง (เตือนว่าใส่ผิด)
 
-# ── ปรับขนาดประวัติคำสั่ง ──
-terminal-transcript-rows=5000
-EOF
+function captain_highlight() {
+    # ดึงคำแรกของบรรทัด (ที่เป็นคำสั่ง)
+    local cmd=$(echo $BUFFER | awk '{print $1}')
+    
+    # ถ้ามีการพิมพ์คำสั่ง
+    if [[ -n $cmd ]]; then
+        # เช็คว่ามันมีอยู่ในระบบไหม (command -v)
+        if command -v $cmd &> /dev/null; then
+            # มีอยู่ → ไฮไลท์เป็นสีเขียว (ทั้งบรรทัด)
+            region_highlight=("0 $#BUFFER fg=green")
+        else
+            # ไม่มี → ไฮไลท์เป็นสีแดง
+            region_highlight=("0 $#BUFFER fg=red")
+        fi
+    fi
+}
 
-# ── 3. โหลดการตั้งค่า ──
-termux-reload-settings
-echo "✅ ตั้งค่าสีและฟอนต์เรียบร้อย!"
+# เรียกใช้ captain_highlight ทุกครั้งที่พิมพ์
+add-zle-hook-widget zle-line-pre-redraw captain_highlight
 
-# ── 4. สร้าง alias และฟังก์ชันเพิ่มความเท่ ──
-echo "⚙️ กำลังเพิ่มคำสั่งลัด (Alias)..."
+# ─────────────────────────────────────────────────────────────
+# ⚙️ ฟังก์ชันแสดง Git Branch
+# ─────────────────────────────────────────────────────────────
+git_branch() {
+    git branch 2>/dev/null | grep '^*' | sed 's/* //'
+}
 
-cat >> ~/.bashrc << 'EOF'
+git_status() {
+    local branch=$(git_branch)
+    if [[ -n $branch ]]; then
+        echo " %F{cyan}[%F{yellow}$branch%F{cyan}]%f"
+    fi
+}
 
-# =====================================================
-# 🚀 Custom Aliases — โดย Captaineieiei
-# =====================================================
+# ─────────────────────────────────────────────────────────────
+# 🎨 พรอมต์หลัก (สวยแบบ Captain)
+# ─────────────────────────────────────────────────────────────
+PROMPT='
+%F{green}┌─[%F{cyan}%n@%m%F{green}]─[%F{yellow}%~%F{green}]$(git_status)
+%F{green}└─[%F{red}%B➜%b%f%F{green}]%f '
 
-# ── คำสั่งลัดพื้นฐาน ──
+# ─────────────────────────────────────────────────────────────
+# ⚡ คำสั่งลัด (Aliases) ส่วนตัว
+# ─────────────────────────────────────────────────────────────
 alias ll='ls -lah'
 alias la='ls -A'
 alias l='ls -CF'
@@ -100,101 +132,55 @@ alias c='clear'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
-
-# ── คำสั่งลัดสำหรับ Termux ──
 alias update='pkg update && pkg upgrade -y'
 alias install='pkg install'
 alias remove='pkg uninstall'
-alias search='pkg search'
 
-# ── คำสั่งลัดสุดเท่ ──
-alias neofetch='pkg install neofetch -y && neofetch'
-alias htop='pkg install htop -y && htop'
-
-# ── ฟังก์ชันเช็คสภาพอากาศ ──
+# ─────────────────────────────────────────────────────────────
+# 🌦️ ฟังก์ชันเช็คสภาพอากาศ
+# ─────────────────────────────────────────────────────────────
 weather() {
     curl -s "wttr.in/${1:-Bangkok}?m" | head -n 20
 }
 
-# ── ฟังก์ชันบอกเวลา ──
-time() {
-    date +"%A, %d %B %Y — %H:%M:%S"
-}
-
-# ── ข้อความต้อนรับเมื่อเปิด Termux ──
+# ─────────────────────────────────────────────────────────────
+# 🎉 ข้อความต้อนรับ (ของเราจริง ๆ)
+# ─────────────────────────────────────────────────────────────
 echo ""
 echo "+------------------------------------------------------+"
 echo "|                                                      |"
-echo "|   🚀 ยินดีต้อนรับกลับมา! พร้อมใช้งานแล้วครับ!        |"
+echo "|   🚀 ยินดีต้อนรับสู่ Termux ของ Captaineieiei!       |"
 echo "|   📅 $(date +"%A, %d %B %Y")                         |"
 echo "|   🕒 เวลา: $(date +"%H:%M:%S")                       |"
 echo "|                                                      |"
-echo "|   💡 พิมพ์ 'll' เพื่อดูไฟล์                           |"
-echo "|   💡 พิมพ์ 'weather' เพื่อดูสภาพอากาศ                |"
-echo "|   💡 พิมพ์ 'time' เพื่อดูเวลา                        |"
+echo "|   💡 ปลั๊กอินของเราเอง:                              |"
+echo "|      - พิมพ์แล้วเห็นสีเขียว/แดง (Highlight)          |"
+echo "|      - กด → (ลูกศรขวา) เพื่อเติมคำแนะนำ (Suggest)   |"
+echo "|                                                      |"
+echo "|   🔥 สร้างโดย Captaineieiei — 100% ไม่พึ่งใคร!      |"
 echo "+------------------------------------------------------+"
 echo ""
 EOF
 
-echo "✅ เพิ่ม Aliases และฟังก์ชันเรียบร้อย!"
+# ── 3. ตั้ง Zsh เป็นเชลล์หลัก ──
+echo "🔄 กำลังตั้ง Zsh เป็นเชลล์หลัก..."
+chsh -s zsh
 
-# ── 5. ถามติดตั้ง Zsh + Powerlevel10k (แบบสวยจัด) ──
+# ── 4. เสร็จสิ้น ──
 echo ""
 echo "+------------------------------------------------------+"
 echo "|                                                      |"
-echo "|   🎯 อยากติดตั้ง Zsh + Powerlevel10k (พรอมต์สุดเท่)?  |"
-echo "|                                                      |"
-echo "|   📌 ข้อดี:                                          |"
-echo "|   - พรอมต์แสดงเวลา, โฟลเดอร์, สถานะ Git             |"
-echo "|   - แนะนำคำสั่งอัตโนมัติ (Autosuggestions)            |"
-echo "|   - ไฮไลท์สีคำสั่ง (Syntax Highlighting)              |"
-echo "|   - ดูโปรแรงเหมือนแฮ็กเกอร์!                         |"
-echo "|                                                      |"
-echo "+------------------------------------------------------+"
-echo ""
-read -p "🔥 ติดตั้ง Zsh + Powerlevel10k เลยไหม? (y/n): " -n 1 -r
-echo ""
-
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    echo ""
-    echo "📦 กำลังติดตั้งเครื่องมือที่จำเป็น..."
-    pkg update -y && pkg upgrade -y
-    pkg install git zsh curl -y
-
-    echo "📦 กำลังติดตั้ง Oh My Zsh..."
-    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" --unattended
-
-    echo "📦 กำลังติดตั้ง Powerlevel10k (พรอมต์ทรงพลัง)..."
-    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
-    sed -i 's/ZSH_THEME=".*"/ZSH_THEME="powerlevel10k\/powerlevel10k"/' ~/.zshrc
-
-    echo "📦 กำลังติดตั้งปลั๊กอินเสริม..."
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-    git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-    sed -i 's/plugins=(git)/plugins=(git zsh-syntax-highlighting zsh-autosuggestions)/' ~/.zshrc
-
-    echo "🔄 ตั้ง Zsh เป็นเชลล์หลัก..."
-    chsh -s zsh
-
-    echo "✅ ติดตั้ง Zsh + Powerlevel10k เสร็จเรียบร้อย!"
-else
-    echo "⏭️ ข้ามการติดตั้ง Zsh (ใช้ Bash เดิม)"
-fi
-
-# ── 6. เสร็จสิ้น ──
-echo ""
-echo "+------------------------------------------------------+"
-echo "|                                                      |"
-echo "|   🎉 ติดตั้งเสร็จสมบูรณ์!                            |"
+echo "|   🎉 ติดตั้ง Zsh + ปลั๊กอินของเราเสร็จสมบูรณ์!       |"
 echo "|                                                      |"
 echo "|   📌 ขั้นตอนต่อไป:                                  |"
-echo "|   1. พิมพ์ 'exit' แล้วกด Enter เพื่อปิดเซสชัน       |"
+echo "|   1. พิมพ์ 'exit' แล้ว Enter เพื่อปิดเซสชัน          |"
 echo "|   2. ปิดแอพ Termux ทิ้ง (ปัดออกจาก Recent Apps)     |"
-echo "|   3. เปิด Termux ใหม่ — สีสวยและ Aliases พร้อมใช้!  |"
+echo "|   3. เปิด Termux ใหม่ — ทุกอย่างเป็นของเรา!          |"
 echo "|                                                      |"
-echo "|   💡 ถ้าติดตั้ง Zsh แล้ว เปิด Termux ใหม่เลย         |"
-echo "|      มันจะใช้ Zsh อัตโนมัติ                          |"
+echo "|   🧠 ปลั๊กอินที่เขียนเอง:                            |"
+echo "|      ✅ Captain Suggest (แนะนำจากประวัติ)           |"
+echo "|      ✅ Captain Highlight (ไฮไลท์คำสั่ง)             |"
 echo "|                                                      |"
-echo "|   🔥 สร้างโดย Captaineieiei                         |"
+echo "|   📝 แก้ไข .zshrc เพื่อปรับแต่งเพิ่มเติมได้เลย!      |"
 echo "+------------------------------------------------------+"
 echo ""
