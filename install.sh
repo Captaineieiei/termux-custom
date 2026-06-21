@@ -1,14 +1,14 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # =============================================================
-# 🚀 TERMUX ULTRA BEAUTY — Typewriter Edition
-#    โดย Captaineieiei — ข้อความพิมพ์ทีละตัวเหมือนดีด!
+# 🚀 TERMUX ULTRA BEAUTY — Full Edition (Fix curl)
+#    โดย Captaineieiei — แก้ปัญหา SSL_set_quick_https_transport_params
 # =============================================================
 
 # ── ฟังก์ชันพิมพ์ทีละตัว ──
 typewriter() {
     local text="$1"
-    local delay="${2:-0.05}"  # ดีเลย์ 0.05 วินาที
+    local delay="${2:-0.05}"
     for ((i=0; i<${#text}; i++)); do
         echo -n "${text:$i:1}"
         sleep "$delay"
@@ -50,20 +50,36 @@ echo ""
 
 sleep 0.3
 
-# ── เริ่มติดตั้ง ──
-print_box "📦 ติดตั้งแพ็กเกจที่จำเป็น"
-echo ""
-
 # ── ตั้งค่า apt ให้เงียบ ──
 export DEBIAN_FRONTEND=noninteractive
 
-# ── ติดตั้ง figlet, zsh, curl ──
-typewriter "▶ กำลังอัปเดตระบบ..." 0.05
-apt update -y > /dev/null 2>&1
-echo -e "\033[1;32m✅ อัปเดตสำเร็จ\033[0m"
+# ── 0. อัปเกรดระบบแบบเต็ม (แก้ปัญหา lib) ──
+print_box "🔧 อัปเกรดระบบและแก้ไขไลบรารี"
+typewriter "▶ กำลังอัปเกรดระบบแบบเต็ม..." 0.05
+apt update -y
+apt full-upgrade -y -o Dpkg::Options::="--force-confold"
 
+typewriter "▶ กำลังลบ curl และ libngtcp2 เพื่อติดตั้งใหม่..." 0.05
+apt remove --purge curl libngtcp2 -y 2>/dev/null
+
+typewriter "▶ กำลังติดตั้ง curl ใหม่..." 0.05
+apt install -y -o Dpkg::Options::="--force-confold" curl
+
+# ── ตรวจสอบ curl ว่าทำงานได้หรือไม่ ──
+if ! curl --version &> /dev/null; then
+    echo -e "\033[1;33m⚠️  curl ยังไม่ทำงาน กรุณาเลือก mirror ใหม่...\033[0m"
+    echo -e "\033[1;34m▶ กำลังเปิดหน้าต่างเปลี่ยน mirror...\033[0m"
+    termux-change-repo
+    apt update -y
+    apt install --reinstall curl -y
+fi
+
+echo -e "\033[1;32m✅ ระบบและ curl พร้อมใช้งาน!\033[0m"
+
+# ── 1. ติดตั้ง figlet, zsh ──
+print_box "📦 ติดตั้งแพ็กเกจที่จำเป็น"
 typewriter "▶ กำลังติดตั้ง figlet, zsh, curl..." 0.05
-apt install -y -o Dpkg::Options::="--force-confold" figlet zsh curl > /dev/null 2>&1
+apt install -y -o Dpkg::Options::="--force-confold" figlet zsh curl
 echo -e "\033[1;32m✅ ติดตั้งสำเร็จ\033[0m"
 
 # ── ตรวจสอบ zsh ──
@@ -72,7 +88,7 @@ if ! command -v zsh &> /dev/null; then
     exit 1
 fi
 
-# ── ตั้งค่า termux.properties ──
+# ── 2. ตั้งค่า termux.properties ──
 print_box "🎨 ตั้งค่าสีและฟอนต์"
 mkdir -p ~/.termux
 cat > ~/.termux/termux.properties << 'EOFPROP'
@@ -104,11 +120,11 @@ EOFPROP
 termux-reload-settings
 echo -e "\033[1;32m✅ ตั้งค่าเรียบร้อย\033[0m"
 
-# ── สร้าง .zshrc ──
+# ── 3. สร้าง .zshrc ──
 print_box "✍️  สร้างไฟล์ .zshrc"
 cat > ~/.zshrc << 'EOFZSHRC'
 # =============================================================
-# 🔥 .zshrc ULTRA BEAUTY — Typewriter Edition
+# 🔥 .zshrc ULTRA BEAUTY — Full Edition
 # =============================================================
 
 autoload -U colors && colors
@@ -117,7 +133,7 @@ setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_SAVE_NO_DUPS
 setopt PROMPT_SP
 
-# ── ฟังก์ชันพิมพ์ทีละตัว (ใช้ในตอนเปิด) ──
+# ── ฟังก์ชันพิมพ์ทีละตัว ──
 typewriter() {
     local text="$1"
     local delay="${2:-0.04}"
@@ -254,7 +270,7 @@ function _captain_farewell() {
 }
 add-zsh-hook zshexit _captain_farewell
 
-# ──── STARTUP BANNER (Typewriter Effect) ────
+# ──── STARTUP BANNER ────
 if [[ -z "$TERMUX_STARTUP" ]]; then
     export TERMUX_STARTUP=1
     clear
@@ -277,20 +293,21 @@ fi
 EOFZSHRC
 echo -e "\033[1;32m✅ สร้าง .zshrc สำเร็จ\033[0m"
 
-# ── ตั้ง Zsh เป็นเชลล์หลัก ──
+# ── 4. ตั้ง Zsh เป็นเชลล์หลัก ──
 print_box "🔄 ตั้ง Zsh เป็นเชลล์หลัก"
 chsh -s zsh
 echo -e "\033[1;32m✅ เปลี่ยนเชลล์สำเร็จ\033[0m"
 
-# ── เสร็จสิ้น ──
+# ── 5. เสร็จสิ้น ──
 echo ""
 echo -e "\033[1;32m┌──────────────────────────────────────────────────────┐\033[0m"
 echo -e "\033[1;32m│                                                      │\033[0m"
 typewriter "│   🎉  ติดตั้งเสร็จสมบูรณ์!                           │" 0.05
+typewriter "│   ✅  แก้ปัญหา curl + libngtcp2 เรียบร้อย           │" 0.05
 typewriter "│   ✅  ระบบพร้อมใช้งาน 100%                          │" 0.05
 typewriter "│   ✅  กำลังเปลี่ยนไปใช้ Zsh ทันที                    │" 0.05
 echo -e "\033[1;32m│                                                      │\033[0m"
-typewriter "│   🔥  คราวนี้ข้อความพิมพ์ทีละตัว!                   │" 0.05
+typewriter "│   🔥  คราวนี้ใช้ได้แน่นอน!                           │" 0.05
 echo -e "\033[1;32m└──────────────────────────────────────────────────────┘\033[0m"
 echo ""
 
